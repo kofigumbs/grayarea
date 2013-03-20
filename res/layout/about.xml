@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.grayarea.About" >
+
+    <TextView
+        android:id="@+id/about_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/options"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="32dp"
+        android:text="@string/about"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <TextView
+        android:id="@+id/about_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/about_title"
+        android:layout_below="@+id/about_title"
+        android:layout_marginBottom="12dp"
+        android:layout_marginRight="32dp"
+        android:clickable="false"
+        android:requiresFadingEdge="vertical"
+        android:scrollbars="vertical"
+        android:textColor="@drawable/text_color"
+        android:textIsSelectable="false" />
+
+    <ImageButton
+        android:id="@+id/options"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/settings"
+        android:clickable="true"
+        android:contentDescription="@string/options"
+        android:hapticFeedbackEnabled="true"
+        android:onClick="showMenu" />
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:layout_alignBottom="@+id/about_title"
+        android:layout_alignParentLeft="true"
+        android:background="@android:color/holo_blue_dark" />
+
+</RelativeLayout>

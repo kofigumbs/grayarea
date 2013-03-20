@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <ImageButton
+        android:id="@+id/options"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/settings"
+        android:clickable="true"
+        android:contentDescription="@string/options"
+        android:hapticFeedbackEnabled="true"
+        android:onClick="showMenu"
+        android:visibility="invisible" />
+
+    <ImageButton
+        android:id="@+id/decision"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/split"
+        android:contentDescription="@string/decision"
+        android:hapticFeedbackEnabled="true"
+        android:onClick="goDecision" />
+
+</RelativeLayout>

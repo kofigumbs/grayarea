@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity" >
+
+    <WebView
+        android:id="@+id/gray"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:scrollbars="none" />
+
+    <ImageButton
+        android:id="@+id/options"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/settings"
+        android:clickable="true"
+        android:contentDescription="@string/options"
+        android:hapticFeedbackEnabled="true"
+        android:onClick="showMenu" />
+
+    <Button
+        android:id="@+id/start"
+        android:layout_width="150dp"
+        android:layout_height="55dp"
+        android:layout_above="@+id/cont"
+        android:layout_toLeftOf="@+id/options"
+        android:onClick="goStart"
+        android:text="@string/start"
+        android:textSize="18sp" />
+
+    <Button
+        android:id="@+id/load"
+        android:layout_width="150dp"
+        android:layout_height="45dp"
+        android:layout_alignParentBottom="true"
+        android:layout_toLeftOf="@+id/options"
+        android:text="@string/load"
+        android:textSize="18sp" />
+
+    <Button
+        android:id="@+id/cont"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="150dp"
+        android:layout_height="55dp"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/options"
+        android:onClick="goContinue"
+        android:text="@string/cont"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/gray"
+        android:layout_alignTop="@+id/gray"
+        android:text="@string/title"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@android:color/black"
+        android:textSize="100sp" />
+
+</RelativeLayout>
