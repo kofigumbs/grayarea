@@ -128,35 +128,40 @@ containing a value of this type.
         public static final int zOrderOnTop=0x7f01000d;
     }
     public static final class drawable {
-        public static final int black_button=0x7f020000;
-        public static final int gray=0x7f020001;
-        public static final int ic_launcher=0x7f020002;
-        public static final int settings=0x7f020003;
-        public static final int split=0x7f020004;
-        public static final int test_cover=0x7f020005;
-        public static final int text_color=0x7f020006;
+        public static final int gray=0x7f020000;
+        public static final int ic_launcher=0x7f020001;
+        public static final int settings=0x7f020002;
+        public static final int split=0x7f020003;
+        public static final int test_cover=0x7f020004;
+        public static final int text_color=0x7f020005;
     }
     public static final class id {
-        public static final int about=0x7f050013;
+        public static final int about=0x7f050019;
         public static final int about_description=0x7f050006;
         public static final int about_title=0x7f050004;
         public static final int cont=0x7f050009;
-        public static final int decision=0x7f050010;
+        public static final int decision=0x7f050016;
         public static final int gray=0x7f050007;
-        public static final int history=0x7f050012;
-        public static final int history_description=0x7f05000e;
-        public static final int history_title=0x7f05000d;
-        public static final int image=0x7f050011;
+        public static final int history=0x7f050018;
+        public static final int history_description=0x7f05000f;
+        public static final int history_title=0x7f05000e;
+        public static final int image=0x7f050017;
+        public static final int item_pic=0x7f050013;
+        public static final int item_text=0x7f050014;
+        public static final int list_item=0x7f050012;
         public static final int load=0x7f05000a;
-        public static final int map=0x7f05000c;
-        public static final int music=0x7f050014;
+        public static final int load_title=0x7f050010;
+        public static final int loader=0x7f050011;
+        public static final int map=0x7f05000d;
+        public static final int music=0x7f05001a;
         public static final int none=0x7f050000;
         public static final int normal=0x7f050001;
         public static final int options=0x7f050005;
-        public static final int pager=0x7f05000f;
+        public static final int pager=0x7f050015;
         public static final int satellite=0x7f050002;
         public static final int start=0x7f050008;
         public static final int terrain=0x7f050003;
+        public static final int textView1=0x7f05000c;
         public static final int title=0x7f05000b;
     }
     public static final class layout {
@@ -164,8 +169,10 @@ containing a value of this type.
         public static final int activity_main=0x7f030001;
         public static final int decision=0x7f030002;
         public static final int history=0x7f030003;
-        public static final int pager=0x7f030004;
-        public static final int panel=0x7f030005;
+        public static final int jumper=0x7f030004;
+        public static final int list_items=0x7f030005;
+        public static final int pager=0x7f030006;
+        public static final int panel=0x7f030007;
     }
     public static final class menu {
         public static final int activity_main=0x7f080000;
@@ -221,9 +228,11 @@ containing a value of this type.
         public static final int common_google_play_services_update_title=0x7f060007;
         public static final int cont=0x7f06000f;
         public static final int decision=0x7f060015;
+        public static final int descriptor=0x7f060018;
         public static final int history=0x7f060013;
         public static final int home=0x7f060016;
         public static final int load=0x7f060010;
+        public static final int load_title=0x7f060017;
         public static final int menu_settings=0x7f06000c;
         public static final int music=0x7f060012;
         public static final int options=0x7f060011;
@@ -252,12 +261,11 @@ containing a value of this type.
     
  API 14 theme customizations can go here. 
          */
-        public static final int AppBaseTheme=0x7f070001;
+        public static final int AppBaseTheme=0x7f070000;
         /**  Application theme. 
  All customizations that are NOT specific to a particular API-level can go here. 
          */
-        public static final int AppTheme=0x7f070002;
-        public static final int ButtonText=0x7f070000;
+        public static final int AppTheme=0x7f070001;
     }
     public static final class styleable {
         /** Attributes that can be used with a MapAttrs.

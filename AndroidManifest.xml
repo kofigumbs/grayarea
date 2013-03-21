@@ -62,6 +62,10 @@
             android:name="History"
             android:label="History"
             android:screenOrientation="landscape" />
+        <activity
+            android:name="Jumper"
+            android:label="Jumper"
+            android:screenOrientation="landscape" />
 
         <!-- GMAPS stuff -->
         <meta-data

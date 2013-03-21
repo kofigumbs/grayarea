@@ -17,8 +17,10 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.location.LocationManager;
 import android.media.MediaPlayer;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -28,6 +30,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
+import android.widget.Toast;
 
 // Common elements between by activities 
 public abstract class MyActivity extends FragmentActivity {
@@ -189,7 +192,19 @@ public abstract class MyActivity extends FragmentActivity {
 	}
 
 	public void goDecision(View v) {
-		startActivity(new Intent(this, Decision.class));
+
+		if (decisions.size() <= chapter)
+			Log.d("ENDOFBOOK", "ENDOFBOOK"); // END OF BOOK
+
+		else if (((LocationManager) this.getSystemService(LOCATION_SERVICE))
+				.isProviderEnabled(LocationManager.GPS_PROVIDER))
+			startActivity(new Intent(this, Decision.class));
+
+		else
+			Toast.makeText(
+					this,
+					"Please enable data and GPS so we can track your decision.",
+					Toast.LENGTH_LONG).show();
 	}
 
 	public void goTitle(final View v) {

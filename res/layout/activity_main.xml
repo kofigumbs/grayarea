@@ -40,6 +40,7 @@
         android:layout_height="45dp"
         android:layout_alignParentBottom="true"
         android:layout_toLeftOf="@+id/options"
+        android:onClick="goJump"
         android:text="@string/load"
         android:textSize="18sp" />
 
@@ -64,5 +65,15 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@android:color/black"
         android:textSize="100sp" />
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/load"
+        android:layout_alignLeft="@+id/title"
+        android:text="@string/descriptor"
+        android:textColor="@android:color/black"
+        android:textSize="22sp" />
 
 </RelativeLayout>

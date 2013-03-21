@@ -1,5 +1,2 @@
-BOOM
-BOOM
-BABY
-
-we outta here!!
+TITLE_01
+text for chapter 1

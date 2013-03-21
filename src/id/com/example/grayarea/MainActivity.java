@@ -18,7 +18,7 @@ import android.content.Intent;
 public class MainActivity extends MyActivity {
 
 	Button start;
-	Button save;
+	Button load;
 	Button cont;
 
 	WebView wv;
@@ -29,7 +29,7 @@ public class MainActivity extends MyActivity {
 		setContentView(R.layout.activity_main);
 
 		start = (Button) findViewById(R.id.start);
-		save = (Button) findViewById(R.id.load);
+		load = (Button) findViewById(R.id.load);
 		cont = (Button) findViewById(R.id.cont);
 		wv = (WebView) findViewById(R.id.gray);
 
@@ -58,9 +58,9 @@ public class MainActivity extends MyActivity {
 			cont.setEnabled(true);
 
 		if (cheat)
-			save.setVisibility(View.VISIBLE);
+			load.setVisibility(View.VISIBLE);
 		else
-			save.setVisibility(View.INVISIBLE);
+			load.setVisibility(View.INVISIBLE);
 	}
 
 	@Override
@@ -94,9 +94,8 @@ public class MainActivity extends MyActivity {
 			new AlertDialog.Builder(MainActivity.this)
 					.setTitle("Confirm")
 					.setMessage(
-							"Do you really want to start a new story?\nAll "
-									+ (cheat ? "unsaved" : "previous")
-									+ " progress will be lost!")
+							"Do you really want to start a new story?\nALL "
+									+ "previous progress will be lost!")
 					.setIcon(android.R.drawable.ic_dialog_alert)
 					.setPositiveButton(android.R.string.yes,
 							new DialogInterface.OnClickListener() {
@@ -119,6 +118,13 @@ public class MainActivity extends MyActivity {
 	public void goContinue(View v) {
 
 		Intent i = new Intent(this, Panel.class);
+		i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+		startActivity(i);
+	}
+
+	public void goJump(View v) {
+
+		Intent i = new Intent(this, Jumper.class);
 		i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
 		startActivity(i);
 	}
