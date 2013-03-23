@@ -55,7 +55,7 @@ public class Decision extends Activity {
 			marks.put(s.keyAt(i), map.addMarker(s.valueAt(i)));
 		}
 
-		map.animateCamera(CameraUpdateFactory.newCameraPosition(CameraPosition
+		map.moveCamera(CameraUpdateFactory.newCameraPosition(CameraPosition
 				.builder().target(UMD).zoom((float) 14.4).tilt((float) 50)
 				.build()));
 
@@ -92,6 +92,7 @@ public class Decision extends Activity {
 													.add(MyActivity.chapter);
 											MyActivity.chapter = next;
 											Panel.canDecide = false;
+											MyActivity.saved = true;
 
 											Intent intent = new Intent(
 													Decision.this, Panel.class);

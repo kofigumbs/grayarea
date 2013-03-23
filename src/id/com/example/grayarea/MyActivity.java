@@ -17,10 +17,8 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.location.LocationManager;
 import android.media.MediaPlayer;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -30,15 +28,15 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
-import android.widget.Toast;
 
 // Common elements between by activities 
 public abstract class MyActivity extends FragmentActivity {
 
 	// status-trackers
-	static int chapter = 0;
+	static int chapter;
 	static ArrayList<Integer> path;
-	public static boolean cheat = false;
+	public static boolean cheat;
+	public static boolean completed;
 
 	// Lists of files that contain panel info
 	static ArrayList<ArrayList<Drawable>> book;
@@ -49,7 +47,8 @@ public abstract class MyActivity extends FragmentActivity {
 	private static boolean pulsing = false;
 
 	public static MediaPlayer mp;
-	public static boolean playing = true;
+	public static boolean playing;
+	public static boolean saved = false;
 
 	public BroadcastReceiver mReceiver;
 
@@ -105,6 +104,8 @@ public abstract class MyActivity extends FragmentActivity {
 		popup = new PopupMenu(this, v);
 		popup.getMenuInflater().inflate(R.menu.activity_main, popup.getMenu());
 		popup.getMenu().findItem(R.id.music).setChecked(playing);
+		popup.getMenu().findItem(R.id.cheat).setVisible(completed)
+				.setChecked(cheat);
 		popup.show();
 
 		popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -122,11 +123,18 @@ public abstract class MyActivity extends FragmentActivity {
 					return true;
 
 				case R.id.music:
-					toggleMusic(MyActivity.this);
+					if (mp == null)
+						getMusic(MyActivity.this);
+					else
+						toggleMusic(MyActivity.this);
 					return true;
 
 				case R.id.history:
 					goHistory(v);
+					return true;
+
+				case R.id.cheat:
+					cheat = !cheat;
 					return true;
 				}
 				return false;
@@ -191,22 +199,6 @@ public abstract class MyActivity extends FragmentActivity {
 		}
 	}
 
-	public void goDecision(View v) {
-
-		if (decisions.size() <= chapter)
-			Log.d("ENDOFBOOK", "ENDOFBOOK"); // END OF BOOK
-
-		else if (((LocationManager) this.getSystemService(LOCATION_SERVICE))
-				.isProviderEnabled(LocationManager.GPS_PROVIDER))
-			startActivity(new Intent(this, Decision.class));
-
-		else
-			Toast.makeText(
-					this,
-					"Please enable data and GPS so we can track your decision.",
-					Toast.LENGTH_LONG).show();
-	}
-
 	public void goTitle(final View v) {
 
 		if (!(this instanceof MainActivity)) {
@@ -247,8 +239,11 @@ public abstract class MyActivity extends FragmentActivity {
 		if (!taskInfo.isEmpty()) {
 			ComponentName topActivity = taskInfo.get(0).topActivity;
 
-			if (!topActivity.getPackageName().equals(c.getPackageName()))
+			if (!topActivity.getPackageName().equals(c.getPackageName())
+					&& mp != null) {
 				mp.stop();
+				mp.release();
+			}
 
 		}
 	}

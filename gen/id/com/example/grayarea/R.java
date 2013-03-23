@@ -139,6 +139,7 @@ containing a value of this type.
         public static final int about=0x7f050019;
         public static final int about_description=0x7f050006;
         public static final int about_title=0x7f050004;
+        public static final int cheat=0x7f05001b;
         public static final int cont=0x7f050009;
         public static final int decision=0x7f050016;
         public static final int gray=0x7f050007;

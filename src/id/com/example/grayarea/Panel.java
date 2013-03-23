@@ -4,9 +4,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import id.com.example.grayarea.Screen.*;
 import android.content.Context;
-import android.content.SharedPreferences;
+import android.content.Intent;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
+import android.view.View;
+import android.widget.Toast;
 
 /*
  * Class to describe behavior of each page
@@ -32,15 +36,28 @@ public class Panel extends MyActivity {
 
 	}
 
+	public void goDecision(View v) {
+
+		if (decisions.size() <= chapter) {
+			Log.d("ENDOFBOOK", "ENDOFBOOK"); // END OF BOOK
+			completed = true;
+			goTitle(null);
+		}
+
+		else if (((LocationManager) this.getSystemService(LOCATION_SERVICE))
+				.isProviderEnabled(LocationManager.GPS_PROVIDER))
+			startActivity(new Intent(this, Decision.class));
+
+		else
+			Toast.makeText(
+					this,
+					"Please enable data and GPS so we can track your decision.",
+					Toast.LENGTH_LONG).show();
+	}
+	
 	@Override
 	public void onPause() {
-
-		SharedPreferences.Editor editor = getPreferences(Context.MODE_PRIVATE)
-				.edit();
-		editor.putInt("chapter", chapter);
-		editor.putBoolean("cheat", cheat);
-		editor.putBoolean("music", mp.isPlaying());
-		editor.commit();
+		super.onPause();
 
 		try {
 			FileOutputStream fos = openFileOutput("path_file",
@@ -52,7 +69,6 @@ public class Panel extends MyActivity {
 			e.printStackTrace();
 		}
 
-		super.onPause();
 	}
 
 }

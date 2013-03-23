@@ -32,5 +32,6 @@
         android:title="@string/music"
         android:visible="true">
     </item>
+    <item android:id="@+id/cheat" android:title="Cheat" android:checked="false" android:enabled="true" android:visible="false" android:checkable="true" android:showAsAction="always"></item>
 
 </menu>

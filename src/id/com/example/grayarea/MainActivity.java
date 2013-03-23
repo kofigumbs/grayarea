@@ -1,19 +1,16 @@
 package id.com.example.grayarea;
 
-import java.util.List;
-
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.Button;
-import android.app.ActivityManager;
-import android.app.ActivityManager.RunningTaskInfo;
+import android.widget.Toast;
 import android.app.AlertDialog;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 
 public class MainActivity extends MyActivity {
 
@@ -32,6 +29,12 @@ public class MainActivity extends MyActivity {
 		load = (Button) findViewById(R.id.load);
 		cont = (Button) findViewById(R.id.cont);
 		wv = (WebView) findViewById(R.id.gray);
+
+		SharedPreferences sp = getPreferences(Context.MODE_PRIVATE);
+		cheat = sp.getBoolean("cheat", false);
+		playing = sp.getBoolean("music", true);
+		chapter = sp.getInt("chapter", 0);
+		completed = sp.getBoolean("completed", false);
 
 		wv.loadUrl("file:///android_asset/back.gif");
 		wv.setHapticFeedbackEnabled(false);
@@ -57,31 +60,35 @@ public class MainActivity extends MyActivity {
 		else
 			cont.setEnabled(true);
 
-		if (cheat)
+		if (completed)
 			load.setVisibility(View.VISIBLE);
 		else
 			load.setVisibility(View.INVISIBLE);
+
+		if (saved) {
+			Toast.makeText(this, "Save successful!", Toast.LENGTH_SHORT).show();
+			saved = false;
+		}
+
 	}
 
 	@Override
 	public void onPause() {
 
-		if (this.isFinishing()) // BACK was pressed from this activity
+		if (this.isFinishing() && mp != null) // BACK was pressed from this
 			mp.stop();
 
-		Context context = getApplicationContext();
+		endMusic(getApplicationContext());
 
-		ActivityManager am = (ActivityManager) context
-				.getSystemService(Context.ACTIVITY_SERVICE);
+		SharedPreferences.Editor editor = getPreferences(Context.MODE_PRIVATE)
+				.edit();
 
-		List<RunningTaskInfo> taskInfo = am.getRunningTasks(1);
+		editor.putInt("chapter", chapter);
+		editor.putBoolean("cheat", cheat);
+		editor.putBoolean("music", playing);
+		editor.putBoolean("completed", completed);
 
-		if (!taskInfo.isEmpty()) {
-			ComponentName topActivity = taskInfo.get(0).topActivity;
-
-			if (!topActivity.getPackageName().equals(context.getPackageName()))
-				mp.stop();
-		}
+		editor.apply();
 
 		super.onPause();
 	}
