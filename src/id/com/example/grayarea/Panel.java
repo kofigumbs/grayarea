@@ -1,14 +1,12 @@
 package id.com.example.grayarea;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
 import id.com.example.grayarea.Screen.*;
-import android.content.Context;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -43,9 +41,28 @@ public class Panel extends MyActivity {
 			if (!completed) {
 				completed = true;
 
+				new AlertDialog.Builder(this)
+						.setTitle("Congratulations!")
+						.setMessage(
+								"You've unlocked 2 new features:\n\n - Jump) go back to "
+										+ "the Title Screen at any point to load a previous chapter\n\n "
+										+ "- Cheat) go to the Menu to disable the location "
+										+ "gameplay and progress without physically moving")
+						.setPositiveButton(android.R.string.yes,
+								new DialogInterface.OnClickListener() {
+
+									public void onClick(DialogInterface dialog,
+											int whichButton) {
+
+										goTitle(null);
+									}
+								}).show();
+
 			}
-			goTitle(null);
-			Log.d("PANEL", completed ? "COMPLETED: TRUE" : "COMPLETED: FALSE");
+
+			else
+				goTitle(null);
+
 		}
 
 		else if (((LocationManager) this.getSystemService(LOCATION_SERVICE))
@@ -57,22 +74,6 @@ public class Panel extends MyActivity {
 					this,
 					"Please enable data and GPS so we can track your decision.",
 					Toast.LENGTH_LONG).show();
-	}
-
-	@Override
-	public void onPause() {
-		super.onPause();
-
-		try {
-			FileOutputStream fos = openFileOutput("path_file",
-					Context.MODE_PRIVATE);
-			fos.write(path.toString().getBytes());
-			fos.close();
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
 	}
 
 }

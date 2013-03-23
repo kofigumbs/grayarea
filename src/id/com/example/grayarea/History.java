@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import android.os.Bundle;
-import android.text.method.ScrollingMovementMethod;
 import android.widget.TextView;
 
 /*
@@ -20,8 +19,6 @@ public class History extends MyActivity {
 		setContentView(R.layout.history);
 
 		text = (TextView) findViewById(R.id.history_description);
-		text.setMovementMethod(new ScrollingMovementMethod());
-		text.setScrollContainer(true);
 		text.setClickable(false);
 	}
 

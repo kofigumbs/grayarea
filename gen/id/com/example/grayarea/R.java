@@ -148,7 +148,7 @@ containing a value of this type.
         public static final int history_description=0x7f05000f;
         public static final int history_title=0x7f05000e;
         public static final int image=0x7f050013;
-        public static final int jumper=0x7f050010;
+        public static final int jump_title=0x7f050010;
         public static final int load=0x7f05000a;
         public static final int map=0x7f05000d;
         public static final int music=0x7f050016;
@@ -168,8 +168,9 @@ containing a value of this type.
         public static final int decision=0x7f030002;
         public static final int history=0x7f030003;
         public static final int jumper=0x7f030004;
-        public static final int pager=0x7f030005;
-        public static final int panel=0x7f030006;
+        public static final int list=0x7f030005;
+        public static final int pager=0x7f030006;
+        public static final int panel=0x7f030007;
     }
     public static final class menu {
         public static final int activity_main=0x7f080000;

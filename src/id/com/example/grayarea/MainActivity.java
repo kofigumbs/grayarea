@@ -1,18 +1,12 @@
 package id.com.example.grayarea;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.util.Stack;
 
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -46,6 +40,20 @@ public class MainActivity extends MyActivity {
 			chapter = sp.getInt("chapter", 0);
 			completed = sp.getBoolean("completed", false);
 			cheat = sp.getBoolean("cheat", false);
+
+			String s = sp.getString("path", "");
+			path = new Stack<Integer>();
+
+			while (!s.equals("")) {
+				path.push(Integer.valueOf(s.substring(0, s.indexOf(","))));
+
+				if (s.contains(","))
+					s = s.substring(s.indexOf(",") + 1);
+
+				else
+					s = "";
+			}
+
 		}
 
 		wv.loadUrl("file:///android_asset/back.gif");
@@ -67,7 +75,7 @@ public class MainActivity extends MyActivity {
 	public void onResume() {
 		super.onResume();
 
-		if (chapter == 0)
+		if (chapter == 0 && !completed)
 			cont.setEnabled(false);
 		else
 			cont.setEnabled(true);
@@ -95,10 +103,15 @@ public class MainActivity extends MyActivity {
 		SharedPreferences.Editor editor = getPreferences(Context.MODE_PRIVATE)
 				.edit();
 
+		String s = "";
+		while (!s.isEmpty())
+			s = s.concat(path.pop() + ",");
+
 		editor.putInt("chapter", chapter);
 		editor.putBoolean("cheat", cheat);
 		editor.putBoolean("music", playing);
 		editor.putBoolean("completed", completed);
+		editor.putString("path", s);
 
 		editor.apply();
 
@@ -109,11 +122,11 @@ public class MainActivity extends MyActivity {
 	public void goStart(View v) {
 		final View view = v;
 
-		if (chapter != 0)
+		if (completed || chapter != 0)
 			new AlertDialog.Builder(MainActivity.this)
 					.setMessage(
 							"Do you really want to start a new story?\nALL "
-									+ "previous progress will be lost!")
+									+ "achievements will be lost!")
 					.setPositiveButton(android.R.string.yes,
 							new DialogInterface.OnClickListener() {
 
@@ -141,30 +154,9 @@ public class MainActivity extends MyActivity {
 
 	public void goJump(View v) {
 
-		PopupWindow jumper = new PopupWindow();
-
-		LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		LinearLayout jump = (LinearLayout) inflater.inflate(R.id.jumper, null);
-
-		for (int i = 0; i < book.size(); i++) {
-
-			TextView tv = new TextView(this);
-
-			try {
-
-				BufferedReader br = new BufferedReader(new InputStreamReader(
-						getAssets().open("history/" + i + ".txt")));
-				tv.setText("Chapter " + i + " : " + br.readLine());
-
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-
-			jump.addView(tv);
-		}
-
-		jumper.setContentView(jump);
-		jumper.showAsDropDown(load);
+		Intent i = new Intent(this, Jumper.class);
+		i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+		startActivity(i);
 	}
 
 }

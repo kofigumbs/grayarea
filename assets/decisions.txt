@@ -3,11 +3,3 @@
 Decision 1
 My House
 39.195607,-77.26938
---1
-{0,2}
-Decision 2
-My House
-39.195607,-77.26938
-I think I'll go and change into my short sleeves
-Oakland Hall
-38.993838,-76.949356

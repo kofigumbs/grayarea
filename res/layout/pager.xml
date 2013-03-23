@@ -14,7 +14,7 @@
         android:layout_height="50dp"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:src="@drawable/settings"
+        android:background="@drawable/settings"
         android:clickable="true"
         android:contentDescription="@string/options"
         android:hapticFeedbackEnabled="true"

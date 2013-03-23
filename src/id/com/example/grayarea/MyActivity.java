@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -35,7 +36,7 @@ public abstract class MyActivity extends FragmentActivity {
 
 	// status-trackers
 	static int chapter;
-	static ArrayList<Integer> path;
+	static Stack<Integer> path;
 	public static boolean cheat;
 	public static boolean completed;
 
@@ -263,7 +264,6 @@ public abstract class MyActivity extends FragmentActivity {
 
 		decisions = new ArrayList<SparseArray<MarkerOptions>>();
 		book = new ArrayList<ArrayList<Drawable>>();
-		path = new ArrayList<Integer>();
 
 		// Read in from .txt files
 		try {

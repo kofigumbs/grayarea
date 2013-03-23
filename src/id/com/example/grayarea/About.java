@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import android.os.Bundle;
-import android.text.method.ScrollingMovementMethod;
 import android.widget.TextView;
 
 /*
@@ -22,8 +21,6 @@ public class About extends MyActivity {
 		// Manipulate TextView
 		text = (TextView) findViewById(R.id.about_description);
 		text.setText(getMyText());
-		text.setMovementMethod(new ScrollingMovementMethod());
-		text.setScrollContainer(true);
 		text.setClickable(false);
 	}
 

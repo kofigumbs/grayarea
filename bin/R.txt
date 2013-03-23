@@ -30,7 +30,7 @@ int id history 0x7f050014
 int id history_description 0x7f05000f
 int id history_title 0x7f05000e
 int id image 0x7f050013
-int id jumper 0x7f050010
+int id jump_title 0x7f050010
 int id load 0x7f05000a
 int id map 0x7f05000d
 int id music 0x7f050016
@@ -48,8 +48,9 @@ int layout activity_main 0x7f030001
 int layout decision 0x7f030002
 int layout history 0x7f030003
 int layout jumper 0x7f030004
-int layout pager 0x7f030005
-int layout panel 0x7f030006
+int layout list 0x7f030005
+int layout pager 0x7f030006
+int layout panel 0x7f030007
 int menu activity_main 0x7f080000
 int raw music 0x7f040000
 int string about 0x7f06000e

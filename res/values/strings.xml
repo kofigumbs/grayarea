@@ -13,7 +13,7 @@
     <string name="title">Gray\nArea</string>
     <string name="decision">Make decision</string>
     <string name="home">Title Screen</string>
-    <string name="load_title">Jump to &#8230;</string>
+    <string name="load_title">Jump back to &#8230;</string>
     <string name="cheat">Cheat</string>
     <string name="descriptor">An Interactive Comic Book</string>
 
