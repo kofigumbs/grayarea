@@ -39,9 +39,13 @@ public class Panel extends MyActivity {
 	public void goDecision(View v) {
 
 		if (decisions.size() <= chapter) {
-			Log.d("ENDOFBOOK", "ENDOFBOOK"); // END OF BOOK
-			completed = true;
+
+			if (!completed) {
+				completed = true;
+
+			}
 			goTitle(null);
+			Log.d("PANEL", completed ? "COMPLETED: TRUE" : "COMPLETED: FALSE");
 		}
 
 		else if (((LocationManager) this.getSystemService(LOCATION_SERVICE))
@@ -54,7 +58,7 @@ public class Panel extends MyActivity {
 					"Please enable data and GPS so we can track your decision.",
 					Toast.LENGTH_LONG).show();
 	}
-	
+
 	@Override
 	public void onPause() {
 		super.onPause();

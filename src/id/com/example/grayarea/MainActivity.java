@@ -1,10 +1,18 @@
 package id.com.example.grayarea;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -20,6 +28,8 @@ public class MainActivity extends MyActivity {
 
 	WebView wv;
 
+	static SharedPreferences sp;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -30,11 +40,13 @@ public class MainActivity extends MyActivity {
 		cont = (Button) findViewById(R.id.cont);
 		wv = (WebView) findViewById(R.id.gray);
 
-		SharedPreferences sp = getPreferences(Context.MODE_PRIVATE);
-		cheat = sp.getBoolean("cheat", false);
-		playing = sp.getBoolean("music", true);
-		chapter = sp.getInt("chapter", 0);
-		completed = sp.getBoolean("completed", false);
+		if (sp == null) {
+			sp = getPreferences(Context.MODE_PRIVATE);
+			playing = sp.getBoolean("music", true);
+			chapter = sp.getInt("chapter", 0);
+			completed = sp.getBoolean("completed", false);
+			cheat = sp.getBoolean("cheat", false);
+		}
 
 		wv.loadUrl("file:///android_asset/back.gif");
 		wv.setHapticFeedbackEnabled(false);
@@ -99,11 +111,9 @@ public class MainActivity extends MyActivity {
 
 		if (chapter != 0)
 			new AlertDialog.Builder(MainActivity.this)
-					.setTitle("Confirm")
 					.setMessage(
 							"Do you really want to start a new story?\nALL "
 									+ "previous progress will be lost!")
-					.setIcon(android.R.drawable.ic_dialog_alert)
 					.setPositiveButton(android.R.string.yes,
 							new DialogInterface.OnClickListener() {
 
@@ -131,9 +141,30 @@ public class MainActivity extends MyActivity {
 
 	public void goJump(View v) {
 
-		Intent i = new Intent(this, Jumper.class);
-		i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-		startActivity(i);
+		PopupWindow jumper = new PopupWindow();
+
+		LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		LinearLayout jump = (LinearLayout) inflater.inflate(R.id.jumper, null);
+
+		for (int i = 0; i < book.size(); i++) {
+
+			TextView tv = new TextView(this);
+
+			try {
+
+				BufferedReader br = new BufferedReader(new InputStreamReader(
+						getAssets().open("history/" + i + ".txt")));
+				tv.setText("Chapter " + i + " : " + br.readLine());
+
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+			jump.addView(tv);
+		}
+
+		jumper.setContentView(jump);
+		jumper.showAsDropDown(load);
 	}
 
 }

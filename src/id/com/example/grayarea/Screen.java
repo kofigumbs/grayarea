@@ -36,6 +36,9 @@ public class Screen {
 
 			ImageButton decision = (ImageButton) getActivity().findViewById(
 					R.id.decision);
+			if (MyActivity.decisions.size() <= MyActivity.chapter)
+				decision.setBackground(this.getResources().getDrawable(
+						R.drawable.stop));
 
 			if (!Panel.canDecide
 					&& position == MyActivity.book.get(MyActivity.chapter)

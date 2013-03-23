@@ -76,11 +76,9 @@ public class Decision extends Activity {
 					final int next = n;
 
 					new AlertDialog.Builder(Decision.this)
-							.setTitle("Confirm")
 							.setMessage(
 									"Do you really want to move to "
 											+ m.getSnippet() + "?")
-							.setIcon(android.R.drawable.ic_dialog_alert)
 							.setPositiveButton(android.R.string.yes,
 									new DialogInterface.OnClickListener() {
 

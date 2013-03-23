@@ -19,6 +19,7 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -94,12 +95,19 @@ public abstract class MyActivity extends FragmentActivity {
 		case R.id.history:
 			goHistory(null);
 			return true;
+
+		case R.id.cheat:
+			cheat = !cheat;
+			return true;
+
 		}
 
 		return true;
 	}
 
 	public void showMenu(final View v) {
+
+		Log.d("MENU", completed ? "COMPLETED: TRUE" : "COMPLETED: FALSE");
 
 		popup = new PopupMenu(this, v);
 		popup.getMenuInflater().inflate(R.menu.activity_main, popup.getMenu());
