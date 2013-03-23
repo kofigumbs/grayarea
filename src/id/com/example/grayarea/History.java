@@ -31,7 +31,7 @@ public class History extends MyActivity {
 		if (path.isEmpty())
 			history = history
 					.concat("There is currently nothing to display because "
-							+ "you are still in the first chapter.\nCheck "
+							+ "you are still in Chapter 0.\nCheck "
 							+ "back as you move on!");
 		else
 			for (int i : path)

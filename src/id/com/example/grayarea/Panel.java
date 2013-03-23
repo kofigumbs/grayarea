@@ -65,14 +65,15 @@ public class Panel extends MyActivity {
 
 		}
 
-		else if (((LocationManager) this.getSystemService(LOCATION_SERVICE))
-				.isProviderEnabled(LocationManager.GPS_PROVIDER))
+		else if (cheat
+				|| ((LocationManager) this.getSystemService(LOCATION_SERVICE))
+						.isProviderEnabled(LocationManager.GPS_PROVIDER))
 			startActivity(new Intent(this, Decision.class));
 
 		else
 			Toast.makeText(
 					this,
-					"Please enable data and GPS so we can track your decision.",
+					"Please enable data and GPS so Gray Area can register your decision.",
 					Toast.LENGTH_LONG).show();
 	}
 

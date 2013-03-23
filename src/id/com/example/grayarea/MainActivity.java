@@ -82,8 +82,10 @@ public class MainActivity extends MyActivity {
 
 		if (completed)
 			load.setVisibility(View.VISIBLE);
-		else
+		else {
 			load.setVisibility(View.INVISIBLE);
+			cheat = false;
+		}
 
 		if (saved) {
 			Toast.makeText(this, "Save successful!", Toast.LENGTH_SHORT).show();
@@ -135,6 +137,7 @@ public class MainActivity extends MyActivity {
 
 									chapter = 0;
 									path.clear();
+									completed = false;
 
 									goContinue(view);
 								}
