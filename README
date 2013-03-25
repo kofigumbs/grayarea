@@ -2,17 +2,5 @@ OVERVIEW
  Gray Area is an interactive comic book project, produced as a capstone project for the University of Maryland Honors College, Digital Cultures & Creativity.  I am developing and designing the application, and a partner is creating the content.  Currently, our main graphics and soundtrack are open-source, cited in "About."
 
 DESCRIPTION
- The defining characteristic of Gray Area is its location-based decision engine.  In summary, in order to progress further in the story, the user must physically move to that location on campus.  In the current version of the application, this feature is slightly ambiguous because I have yet to implement the tutorial, which will exist in the full prototype.  
- Currently, the application fully implements the following features:
-  - "About" 
-  - "Panel"
-  - "Menu"
-  - "Decision" 
-  - "History"
-  - "Continue" 
- Yet to implement:
-  - "Save/Load" functionality
-  - "Original" graphics and final design
-
-STATUS
- This version of the application is in a pre-alpha stage, a couple weeks away from being a full prototype.  It is currently an incomplete framework of the project, with filler images and text for demonstration purposes.
+ The defining characteristic of Gray Area is its location-based decision engine.  In summary, in order to progress further in the story, the user must physically move to that location on campus.  In the current version of the application, this feature is slightly ambiguous because we have yet to create the tutorial, which will be a series of instructional panels in Chapter 0.
+ Currently, the application fully implements every feature, and we will soon begin alpha testing (with the filler panels). In order to test more quickly, I set the decision markers at my house, and the chapters looped around.  This can be changed, however, by editing "deciisions.txt" and following the formatting conventions.  A guide to editing the .txt files will also come soon.  [NOTE: The code is messy and needs some cleaning up.]
