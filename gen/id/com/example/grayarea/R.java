@@ -128,13 +128,12 @@ containing a value of this type.
         public static final int zOrderOnTop=0x7f01000d;
     }
     public static final class drawable {
-        public static final int gray=0x7f020000;
-        public static final int ic_launcher=0x7f020001;
+        public static final int background=0x7f020000;
+        public static final int gray=0x7f020001;
         public static final int settings=0x7f020002;
         public static final int split=0x7f020003;
         public static final int stop=0x7f020004;
-        public static final int test_cover=0x7f020005;
-        public static final int text_color=0x7f020006;
+        public static final int text_color=0x7f020005;
     }
     public static final class id {
         public static final int about=0x7f050015;
@@ -143,6 +142,7 @@ containing a value of this type.
         public static final int cheat=0x7f050017;
         public static final int cont=0x7f050009;
         public static final int decision=0x7f050012;
+        public static final int descriptor=0x7f05000c;
         public static final int gray=0x7f050007;
         public static final int history=0x7f050014;
         public static final int history_description=0x7f05000f;
@@ -159,7 +159,6 @@ containing a value of this type.
         public static final int satellite=0x7f050002;
         public static final int start=0x7f050008;
         public static final int terrain=0x7f050003;
-        public static final int textView1=0x7f05000c;
         public static final int title=0x7f05000b;
     }
     public static final class layout {

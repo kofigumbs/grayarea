@@ -33,15 +33,17 @@
 
     <ImageButton
         android:id="@+id/options"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
+        android:layout_margin="20dp"
         android:background="@drawable/settings"
         android:clickable="true"
         android:contentDescription="@string/options"
         android:hapticFeedbackEnabled="true"
-        android:onClick="showMenu" />
+        android:onClick="showMenu"
+        android:padding="20dp" />
 
     <View
         android:layout_width="fill_parent"

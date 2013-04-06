@@ -116,14 +116,6 @@ public class Decision extends Activity {
 		});
 	}
 
-	@Override
-	public void onResume() {
-		super.onResume();
-
-		if (MyActivity.playing && !MyActivity.mp.isPlaying())
-			MyActivity.getMusic(this);
-	}
-
 	private static boolean isNear(GoogleMap map, Marker m) {
 
 		if (Math.abs(map.getMyLocation().getLatitude()
@@ -136,10 +128,4 @@ public class Decision extends Activity {
 			return false;
 	}
 
-	@Override
-	public void onPause() {
-
-		MyActivity.endMusic(getApplicationContext());
-		super.onPause();
-	}
 }

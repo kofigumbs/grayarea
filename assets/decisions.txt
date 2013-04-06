@@ -1,5 +1,61 @@
 --0
 {1}
-Decision 1
-My House
-39.195607,-77.26938
+Investigate the secret project.
+Stamp Student Union
+38.988081,-76.944738
+--1
+{1,2}
+George Williams probably knows what’s happening.
+Computer Science Instructional Center
+38.989991,-76.936205
+I need to see what my friends think about what’s going on.
+The Diner
+38.992321,-76.946671
+--2
+{4,5}
+Start beating the system with Professor Williams.
+McKeldin Library
+38.985934,-76.947975
+I want to explore on my own.
+Hornbake Plaza
+38.988035,-76.942627
+--3
+{6,7}
+They're freaking me out. I'm going to explore on my own.
+Hornbake Plaza
+38.988035,-76.942627
+I'm going to stick with Ali and Tim.
+Stamp Student Union
+38.988081,-76.944738
+--4
+{8,9}
+I want to return to reality and never come back.
+Hornbake Plaza
+38.988035,-76.942627
+I want to try the password on the original portal that disappeared.
+Stamp Student Union
+38.988081,-76.944738
+--5
+{10,11}
+I'm bringing Ali and Tim with me.
+The Diner
+38.992321,-76.946671
+I'm finding Professor Williams in the real world.
+Computer Science Instructional Center
+38.989991,-76.936205
+--6
+{12,13}
+I'm finding this Professor Williams.
+Computer Science Instructional Center
+38.989991,-76.936205
+I'm getting Ali and Tim.
+The Diner
+38.992321,-76.946671
+--7
+{14,15}
+I'm going to use the password on the original doorway.
+Stamp Student Union
+38.988081,-76.944738
+I'm not leaving. I'll stay here.
+The Diner
+38.992321,-76.946671

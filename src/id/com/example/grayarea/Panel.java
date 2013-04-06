@@ -60,8 +60,11 @@ public class Panel extends MyActivity {
 
 			}
 
-			else
+			else {
 				goTitle(null);
+				Toast.makeText(this, "Congratulations! You've completed this story path.",
+						Toast.LENGTH_LONG).show();
+			}
 
 		}
 

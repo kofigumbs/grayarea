@@ -2,13 +2,14 @@ package id.com.example.grayarea;
 
 import java.util.Stack;
 
+import android.media.AsyncPlayer;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.MotionEvent;
 import android.view.View;
-import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.Toast;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -20,8 +21,6 @@ public class MainActivity extends MyActivity {
 	Button load;
 	Button cont;
 
-	WebView wv;
-
 	static SharedPreferences sp;
 
 	@Override
@@ -32,42 +31,64 @@ public class MainActivity extends MyActivity {
 		start = (Button) findViewById(R.id.start);
 		load = (Button) findViewById(R.id.load);
 		cont = (Button) findViewById(R.id.cont);
-		wv = (WebView) findViewById(R.id.gray);
 
-		if (sp == null) {
-			sp = getPreferences(Context.MODE_PRIVATE);
-			playing = sp.getBoolean("music", true);
-			chapter = sp.getInt("chapter", 0);
-			completed = sp.getBoolean("completed", false);
-			cheat = sp.getBoolean("cheat", false);
+		// Setup music
+		if (mp == null)
+			mp = new AsyncPlayer("mp");
 
-			String s = sp.getString("path", "");
-			path = new Stack<Integer>();
+		// Load splash screen
+		new AsyncTask<Void, Void, Void>() {
+			private final ProgressDialog dialog = new ProgressDialog(
+					MainActivity.this);
 
-			while (!s.equals("")) {
-				path.push(Integer.valueOf(s.substring(0, s.indexOf(","))));
+			@Override
+			protected void onPreExecute() {
 
-				if (s.contains(","))
-					s = s.substring(s.indexOf(",") + 1);
+				if (sp == null) {
+					dialog.setMessage("Initializing...");
+					dialog.setCancelable(false);
+					dialog.setCanceledOnTouchOutside(false);
+					dialog.show();
+				}
 
-				else
-					s = "";
 			}
 
-		}
+			@Override
+			protected Void doInBackground(Void... params) {
 
-		wv.loadUrl("file:///android_asset/back.gif");
-		wv.setHapticFeedbackEnabled(false);
+				if (sp == null) {
+					sp = getPreferences(Context.MODE_PRIVATE);
+					chapter = sp.getInt("chapter", 0);
+					completed = sp.getBoolean("completed", false);
+					cheat = sp.getBoolean("cheat", false);
 
-		// disable scroll on touch
-		wv.setOnTouchListener(new View.OnTouchListener() {
+					String s = sp.getString("path", "");
+					path = new Stack<Integer>();
 
-			public boolean onTouch(View v, MotionEvent event) {
-				return (event.getAction() == MotionEvent.ACTION_MOVE);
+					while (!s.equals("")) {
+						path.push(Integer.valueOf(s.substring(0, s.indexOf(","))));
+
+						if (s.contains(","))
+							s = s.substring(s.indexOf(",") + 1);
+
+						else
+							s = "";
+					}
+
+					MainActivity.this.populate();
+				}
+
+				return null;
 			}
-		});
 
-		populate();
+			@Override
+			protected void onPostExecute(Void result) {
+				if (dialog.isShowing()) {
+					dialog.dismiss();
+				}
+			}
+
+		}.execute();
 
 	}
 
@@ -82,10 +103,8 @@ public class MainActivity extends MyActivity {
 
 		if (completed)
 			load.setVisibility(View.VISIBLE);
-		else {
+		else
 			load.setVisibility(View.INVISIBLE);
-			cheat = false;
-		}
 
 		if (saved) {
 			Toast.makeText(this, "Save successful!", Toast.LENGTH_SHORT).show();
@@ -97,10 +116,10 @@ public class MainActivity extends MyActivity {
 	@Override
 	public void onPause() {
 
-		if (this.isFinishing() && mp != null) // BACK was pressed from this
-			mp.stop();
-
-		endMusic(getApplicationContext());
+		if (isFinishing()) {
+			playing = false;
+			setMusic();
+		}
 
 		SharedPreferences.Editor editor = getPreferences(Context.MODE_PRIVATE)
 				.edit();
@@ -111,7 +130,6 @@ public class MainActivity extends MyActivity {
 
 		editor.putInt("chapter", chapter);
 		editor.putBoolean("cheat", cheat);
-		editor.putBoolean("music", playing);
 		editor.putBoolean("completed", completed);
 		editor.putString("path", s);
 
@@ -135,9 +153,16 @@ public class MainActivity extends MyActivity {
 								public void onClick(DialogInterface dialog,
 										int whichButton) {
 
+									if (cheat)
+										Toast.makeText(
+												MainActivity.this,
+												"Location is now necessary for decisions",
+												Toast.LENGTH_SHORT).show();
+
 									chapter = 0;
 									path.clear();
 									completed = false;
+									cheat = false;
 
 									goContinue(view);
 								}

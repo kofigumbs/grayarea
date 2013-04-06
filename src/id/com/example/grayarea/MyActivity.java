@@ -5,22 +5,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Stack;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import android.app.ActivityManager;
-import android.app.ActivityManager.RunningTaskInfo;
-import android.content.BroadcastReceiver;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.media.MediaPlayer;
+import android.media.AsyncPlayer;
+import android.media.AudioManager;
+import android.net.Uri;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -30,44 +25,30 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
+import android.widget.Toast;
 
 // Common elements between by activities 
 public abstract class MyActivity extends FragmentActivity {
 
-	// status-trackers
+	// Status-trackers
 	static int chapter;
 	static Stack<Integer> path;
 	public static boolean cheat;
 	public static boolean completed;
+	public static boolean saved = false;
 
 	// Lists of files that contain panel info
 	static ArrayList<ArrayList<Drawable>> book;
 	static ArrayList<SparseArray<MarkerOptions>> decisions;
 
+	// Menu stuff
 	private static PopupMenu popup;
 	private ImageButton options;
 	private static boolean pulsing = false;
 
-	public static MediaPlayer mp;
-	public static boolean playing;
-	public static boolean saved = false;
-
-	public BroadcastReceiver mReceiver;
-
-	@Override
-	public void onResume() {
-		super.onResume();
-
-		if (playing && (mp == null || !mp.isPlaying()))
-			getMusic(this);
-	}
-
-	@Override
-	public void onPause() {
-		super.onPause();
-
-		endMusic(getApplicationContext());
-	}
+	// Music stuff
+	public static AsyncPlayer mp;
+	public static boolean playing = false;
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -89,8 +70,8 @@ public abstract class MyActivity extends FragmentActivity {
 			return true;
 
 		case R.id.music:
-			toggleMusic(MyActivity.this);
-			item.setChecked(playing);
+			playing = !playing;
+			setMusic();
 			return true;
 
 		case R.id.history:
@@ -99,6 +80,17 @@ public abstract class MyActivity extends FragmentActivity {
 
 		case R.id.cheat:
 			cheat = !cheat;
+
+			if (cheat)
+				Toast.makeText(MyActivity.this,
+						"Location no longer necessary for decisions",
+						Toast.LENGTH_SHORT).show();
+
+			else
+				Toast.makeText(MyActivity.this,
+						"Location is now necessary for decisions",
+						Toast.LENGTH_SHORT).show();
+
 			return true;
 
 		}
@@ -107,8 +99,6 @@ public abstract class MyActivity extends FragmentActivity {
 	}
 
 	public void showMenu(final View v) {
-
-		Log.d("MENU", completed ? "COMPLETED: TRUE" : "COMPLETED: FALSE");
 
 		popup = new PopupMenu(this, v);
 		popup.getMenuInflater().inflate(R.menu.activity_main, popup.getMenu());
@@ -121,64 +111,21 @@ public abstract class MyActivity extends FragmentActivity {
 
 			@Override
 			public boolean onMenuItemClick(MenuItem item) {
-				switch (item.getItemId()) {
-
-				case R.id.about:
-					goAbout(v);
-					return true;
-
-				case R.id.title:
-					goTitle(v);
-					return true;
-
-				case R.id.music:
-					if (mp == null)
-						getMusic(MyActivity.this);
-					else
-						toggleMusic(MyActivity.this);
-					return true;
-
-				case R.id.history:
-					goHistory(v);
-					return true;
-
-				case R.id.cheat:
-					cheat = !cheat;
-					return true;
-				}
-				return false;
+				return MyActivity.this.onOptionsItemSelected(item);
 			}
+
 		});
 	}
 
-	public static void toggleMusic(Context c) {
+	protected void setMusic() {
 
-		if (mp.isPlaying())
+		if (!playing)
 			mp.stop();
+		else
+			mp.play(MyActivity.this.getApplicationContext(),
+					Uri.parse("android.resource://id.com.example.grayarea/"
+							+ R.raw.music), true, AudioManager.STREAM_MUSIC);
 
-		else {
-			getMusic(c);
-		}
-
-		playing = mp.isPlaying();
-	}
-
-	public static void getMusic(Context c) {
-		try {
-			if (mp != null)
-				mp.release();
-			mp = MediaPlayer.create(c, R.raw.music);
-			mp.seekTo(4000);
-			mp.start();
-			mp.setLooping(true);
-
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-		} catch (SecurityException e) {
-			e.printStackTrace();
-		} catch (IllegalStateException e) {
-			e.printStackTrace();
-		}
 	}
 
 	public void pulseIcons(View v) {
@@ -236,25 +183,6 @@ public abstract class MyActivity extends FragmentActivity {
 			startActivity(i);
 		} else
 			popup.dismiss();
-	}
-
-	public static void endMusic(Context c) {
-
-		ActivityManager am = (ActivityManager) c
-				.getSystemService(Context.ACTIVITY_SERVICE);
-
-		List<RunningTaskInfo> taskInfo = am.getRunningTasks(1);
-
-		if (!taskInfo.isEmpty()) {
-			ComponentName topActivity = taskInfo.get(0).topActivity;
-
-			if (!topActivity.getPackageName().equals(c.getPackageName())
-					&& mp != null) {
-				mp.stop();
-				mp.release();
-			}
-
-		}
 	}
 
 	/*
