@@ -27,11 +27,4 @@
         android:onClick="showMenu"
         android:padding="20dp" />
 
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:layout_alignBottom="@+id/jump_title"
-        android:layout_alignParentLeft="true"
-        android:background="@android:color/holo_blue_dark" />
-
 </RelativeLayout>

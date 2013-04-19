@@ -25,13 +25,30 @@
 
     <ImageButton
         android:id="@+id/decision"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
+        android:layout_margin="20dp"
         android:background="@drawable/split"
         android:contentDescription="@string/decision"
         android:hapticFeedbackEnabled="true"
-        android:onClick="goDecision" />
+        android:onClick="goDecision"
+        android:padding="20dp"
+        android:visibility="invisible" />
+
+    <ImageButton
+        android:id="@+id/stop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="20dp"
+        android:background="@drawable/stop"
+        android:contentDescription="@string/decision"
+        android:hapticFeedbackEnabled="true"
+        android:onClick="goDecision"
+        android:padding="20dp"
+        android:visibility="invisible" />
 
 </RelativeLayout>

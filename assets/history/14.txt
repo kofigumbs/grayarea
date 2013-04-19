@@ -1,0 +1,26 @@
+I’m going to use the password on the original doorway
+IN STAMP...
+	Upon arriving at the blank wall, the doorway reappears. I go through the motions again, walk through the door, and, this time, the distorted world falls away. Stamp looks normal again. I’m left feeling intrigued. This virtual world has a lot of potential to be something really cool. I think I need to contact George Williams.
+
+IN CSIC...
+	- Professor Williams?
+	- [PW] Yes? Hello.
+	- Excuse me, I just have some questions.
+	- [PW] If you’re with the Diamondback, there’s nothing I can tell you.
+	- No, I’m not a reporter. You’ve never met me before, but I know some things about your project. You see I went to Stamp, snooping around...
+	- [PW] So you’re the student who entered the virtual world. You shouldn’t have done that – I’m surprised to see that you’re even here! It’s not yet complete.
+	- A virtual world? I was in some kind of virtual reality thing?
+	- [PW] Yes, well, I’m not really supposed to be giving out any information about it. But...how did you get out?
+	- Well, I was on Hornbake Plaza -
+	- [PW] You figured out the back up escape on your own?
+	- I wouldn’t say I figured anything out.
+	- [PW] Listen, I’m not going to waste my time punishing you for something. It wasn’t really your fault. But that world isn’t meant for students.
+	- Then what’s the point?
+	- [PW] It’s for professors, faculty. To explore academia. Explore anything.
+	- Why can’t students use it, then? Parts of it were really amazing, to me.
+	- [PW] Well, I, the university, all of us, we never really considered the students. And yet here we are and I have my first test run with a student. What did you think?
+	- Being able to know information in a moment’s notice was pretty cool. Some of it was a bit too strange, though. It all looked so alien.
+	- [PW] Well, it’s still under construction. Students, hm. You’ve got me thinking. Would you like to join the team? Maybe a student’s input has more value than I realized.
+	- Well, sure...that sounds cool! As long as students will be allowed to use it once it’s complete.
+	- [PW] We’ll have to convince administration. Without getting you – or me...into trouble. But I will agree to that. A nice challenge and some fresh ideas.
+	Now this is the college experience.

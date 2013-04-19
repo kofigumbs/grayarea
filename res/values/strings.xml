@@ -16,5 +16,9 @@
     <string name="load_title">Jump back to &#8230;</string>
     <string name="cheat">Cheat</string>
     <string name="descriptor">An Interactive Comic Book</string>
+    <string name="music_unchecked">Music &#9674;</string>
+    <string name="music_checked">Music &#9830;</string>
+    <string name="cheat_unchecked">Cheat &#9674;</string>
+    <string name="cheat_checked">Cheat &#9830;</string>
 
 </resources>
