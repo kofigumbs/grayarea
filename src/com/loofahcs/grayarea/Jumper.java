@@ -2,14 +2,18 @@ package com.loofahcs.grayarea;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.view.Gravity;
 import android.view.View.OnClickListener;
+import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
@@ -19,13 +23,15 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-/*
+/**
+ * Load Activity.
  * 
- * NOT YET IMPLEMENTED
- * "Save/Load" feature
- *
+ * Allows users to jump back to previous chapters to explore other options
+ * without starting over from the beginning.
+ * 
+ * @author Loofah Computer Systems
+ * 
  */
-
 public class Jumper extends MyActivity {
 
 	@Override
@@ -42,11 +48,19 @@ public class Jumper extends MyActivity {
 			ImageView iv = new ImageView(this);
 			TextView tv = new TextView(this);
 
-			iv.setImageDrawable(book.get(i).get(0));
+			try {
+				InputStream is = getAssets().open(book.get(i).get(0));
+				Drawable d = Drawable.createFromStream(is, null);
+				iv.setImageDrawable(d);
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+
 			iv.setOnClickListener(new OnClickListener() {
 
 				@Override
-				public void onClick(View arg0) {
+				public void onClick(View v) {
+					v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
 
 					new AlertDialog.Builder(Jumper.this)
 							.setMessage(
@@ -59,6 +73,16 @@ public class Jumper extends MyActivity {
 												int whichButton) {
 
 											chapter = newChapter;
+
+											SharedPreferences.Editor editor = getSharedPreferences(
+													"ga_data",
+													Context.MODE_PRIVATE)
+													.edit();
+
+											editor.putInt("page", 0);
+											editor.putBoolean("can_split",
+													false);
+											editor.apply();
 
 											Intent in = new Intent(Jumper.this,
 													Panel.class);

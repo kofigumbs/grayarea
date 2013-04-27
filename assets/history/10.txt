@@ -1,13 +1,13 @@
 I’m bringing Ali and Tim with me
 IN THE DINER...
-	When I find Ali and Tim, they’re not speaking to each other.
-	- Let’s pretend there’s not an issue right now. I want to show you guys something in Stamp.
+	When I find Ali and Tim, they're not speaking to each other.
+	- Let's pretend there's not an issue right now. I want to show you guys something in Stamp.
 	- [Ali] Fine.
 	- Now, it seems crazy, but...
 IN STAMP...
 	I go through the same steps that I did the first time. This time, I lead Ali and Tim through the portal.
-	- [Tim] What’s going on?
+	- [Tim] What's going on?
 	- [Ali] This...does this have to do with the Diamondback story?
-	- Yeah – it’s a virtual version of campus.
+	- Yeah - it's a virtual version of campus.
 	- [Tim] What does it do?
-	- I’ll show you guys.
+	- I'll show you guys.

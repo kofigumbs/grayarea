@@ -1,12 +1,12 @@
 I’m getting Ali and Tim
 IN THE DINER...
-	When I find Ali and Tim, they’re not speaking to each other.
-	- Let’s pretend there’s not an issue right now. I want to show you guys something in Stamp.
+	When I find Ali and Tim, they're not speaking to each other.
+	- Let's pretend there's not an issue right now. I want to show you guys something in Stamp.
 	- [Ali] Fine.
 	- Now, it seems crazy, but...
 	I go through the same steps that I did the first time. This time, I lead Ali and Tim through the doorway.
-	- [Tim] What’s going on?
+	- [Tim] What's going on?
 	- [Ali] This...does this have to do with the Diamondback story?
 	- I think so. I need you guys to help me figure out what it is.
 	- [Tim] What does it mean?
-	- [Ali] Let’s go find out.
+	- [Ali] Let's go find out.

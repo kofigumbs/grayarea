@@ -6,9 +6,14 @@ import java.io.InputStreamReader;
 import android.os.Bundle;
 import android.widget.TextView;
 
-/*
- * Shows a running text log, so users can view past 
- * chapters without swiping through the images
+/**
+ * History page Activity
+ * 
+ * Shows a running text log, so users can view past chapters without swiping
+ * through the images.
+ * 
+ * @author Loofah Computer Systems
+ * 
  */
 public class History extends MyActivity {
 

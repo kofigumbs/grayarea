@@ -1,1 +1,3 @@
-Music: tokyoStreet by airtone on ccmixter.org
+It's an interactive, interspatial story app for Android set on the campus of the University of Maryland College Park. To break that down some more, it's a choose-your-own-adventure story app that takes the user into a comic book-style adventure. The user progresses through the story by swiping until it's decision time. When it's time to make a decision for the protagonist, the app uses location-based technology to progress the story. The user will move to a different physical location on campus in order to choose what will happen next in this story that tests the bounds of virtual reality. Once the user makes this move, the adventure can continue. Gray Area mixes great graphics, location-based technology, and choose-your-own-adventure into one unique story.
+
+http://www.GrayAreaApp.weebly.com

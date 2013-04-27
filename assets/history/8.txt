@@ -4,12 +4,12 @@ I want to return to reality and never come back
 IN THE DINER...
 	I find Ali and Tim.
 	- [Tim] Hey.
-	- [Ali] How’s it going?
-	It’s a relief that I don’t need to ask them questions to hold a conversation.
-	- It’s a nice day out. What’d you guys do last night?
-	- [Tim] We ended up going to a friend’s place.
-	Argument resolved. They’re fine now. It’s funny how much their conflicts affect me. I think I prefer arguments to a constructed, virtual world, void of conflicts. 
+	- [Ali] How's it going?
+	It's a relief that I don't need to ask them questions to hold a conversation.
+	- It's a nice day out. What'd you guys do last night?
+	- [Tim] We ended up going to a friend's place.
+	Argument resolved. They're fine now. It's funny how much their conflicts affect me. I think I prefer arguments to a constructed, virtual world, void of conflicts. 
 	- [Ali] Did you do anything interesting last night?
 	- Nope.
-	- [Tim] That’s no fun. You should come with us next weekend!
+	- [Tim] That's no fun. You should come with us next weekend!
 	- Sounds good to me.

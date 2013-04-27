@@ -1,10 +1,10 @@
 Investigate the secret project
 IN STAMP...
-	Since I’m not going to be falling asleep anytime soon...
-	After some searching, I come upon a strangely normal doorway. If this is the secret project, it looks much less high-tech than I was expecting. Oh well. Maybe it’s still worth investigating. Inside stands a lone monitor. I notice that the current user on the computer is “G. Williams.” Who’s that? A professor? Maybe Professor Williams is in charge of this project. I’m surprised that someone would leave the computer unattended. Curious about the machine, I log on using my university ID and password. A window appears: To begin, select OK. To cancel initiation, select CANCEL.
-	I should get out of here. How vague of a prompt is that, anyway? But...what the heck, it can’t hurt too much to continue. I select OK. Another window instructs that I walk through the doorway. Well, there’s only one exit for this room. I slowly approach the door and turn the handle.
-	What happened? Everything looks...different. Did this thing damage my eyesight? I rub my eyes, but I feel completely fine. Weird. What did I initiate? Maybe I should’ve figured that out before pressing OK. 
+	Since I'm not going to be falling asleep anytime soon...
+	After some searching, I come upon a strangely normal doorway. If this is the secret project, it looks much less high-tech than I was expecting. Oh well. Maybe it's still worth investigating. Inside stands a lone monitor. I notice that the current user on the computer is "G. Williams." Who's that? A professor? Maybe Professor Williams is in charge of this project. I'm surprised that someone would leave the computer unattended. Curious about the machine, I log on using my university ID and password. A window appears: To begin, select OK. To cancel initiation, select CANCEL.
+	I should get out of here. How vague of a prompt is that, anyway? But...what the heck, it can't hurt too much to continue. I select OK. Another window instructs that I walk through the doorway. Well, there's only one exit for this room. I slowly approach the door and turn the handle.
+	What happened? Everything looks...different. Did this thing damage my eyesight? I rub my eyes, but I feel completely fine. Weird. What did I initiate? Maybe I should've figured that out before pressing OK. 
 	The doorway that existed just moments is now a blank, white wall. I should question my sanity. Instead, I consider what to do.
 	A name comes back to me. Williams. How do I find this mysterious G. Williams on campus? Suddenly a flood of information seems to run through my mind. George Williams is a professor of Computer Science at UMD. He can be found in room 1101 in the Computer Science Instructional Center. 
 	How did I know all of that?
-	And are Ali and Tim okay? Maybe I should find my friends and get their perspective on this. Everything that’s happening may be in my imagination.
+	And are Ali and Tim okay? Maybe I should find my friends and get their perspective on this. Everything that's happening may be in my imagination.

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">GrayArea</string>
+    <string name="app_name">Gray Area</string>
     <string name="menu_settings">Settings</string>
     <string name="start">Begin</string>
     <string name="about">About</string>

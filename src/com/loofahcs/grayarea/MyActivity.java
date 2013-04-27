@@ -2,7 +2,6 @@ package com.loofahcs.grayarea;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Stack;
@@ -10,13 +9,15 @@ import java.util.Stack;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
+import android.content.SharedPreferences;
 import android.media.AsyncPlayer;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.support.v4.app.FragmentActivity;
 import android.util.SparseArray;
+import android.view.HapticFeedbackConstants;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -26,29 +27,54 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-// Common elements between by activities 
+/**
+ * Parent class that defines behavior that will be shared among all Activities
+ * in this application. Mainly devoted to implementing the Menu, Music, and
+ * Book.
+ * 
+ * @author Loofah Computer Systems
+ * 
+ */
 public abstract class MyActivity extends FragmentActivity {
 
-	// Status-trackers
+	// Variables that track progress in the Book
 	static int chapter;
 	static Stack<Integer> path;
-	public static boolean cheat;
-	public static boolean completed;
-	public static boolean saved = false;
+	static boolean cheat;
+	static boolean completed;
 
-	// Lists of files that contain panel info
-	static ArrayList<ArrayList<Drawable>> book;
+	// Lists of files that contain information for the Book
+	static ArrayList<ArrayList<String>> book;
 	static ArrayList<SparseArray<MarkerOptions>> decisions;
 
-	// Menu stuff
-	private ImageButton options;
-	private static boolean pulsing = false;
+	// Where story will take place and where to center map
+	static LatLng setting;
 
-	// Music stuff
-	public static AsyncPlayer mp;
-	public static boolean playing = false;
+	// Music player and its state
+	static AsyncPlayer mp;
+	static boolean playing;
+
+	// Tracks state of Menu Icon within Panel
+	private static boolean pulsing;
 
 	@Override
+	// Stores state variables when for app restart
+	public void onPause() {
+		super.onPause();
+
+		SharedPreferences.Editor editor = getSharedPreferences("ga_data",
+				Context.MODE_PRIVATE).edit();
+
+		editor.putBoolean("cheat", cheat);
+		editor.putBoolean("completed", completed);
+		editor.putBoolean("music", playing);
+
+		editor.apply();
+	}
+
+	@Override
+	// "Checks" active boxes and displays Cheat (if applicable) for
+	// onCreateOptionsMenu
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		super.onPrepareOptionsMenu(menu);
 
@@ -114,7 +140,14 @@ public abstract class MyActivity extends FragmentActivity {
 		return true;
 	}
 
+	/**
+	 * In-app Menu Icon was pressed
+	 * 
+	 * @param v
+	 *            Menu Icon
+	 */
 	public void showMenu(final View v) {
+		v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
 		openOptionsMenu();
 	}
 
@@ -129,12 +162,18 @@ public abstract class MyActivity extends FragmentActivity {
 
 	}
 
+	/**
+	 * Shows and hides in-app Menu Icon in Panel
+	 * 
+	 * @param v
+	 *            Anywhere on screen
+	 */
 	public void pulseIcons(View v) {
 
 		if (!pulsing) {
 			pulsing = true;
 
-			options = (ImageButton) findViewById(R.id.options);
+			final ImageButton options = (ImageButton) findViewById(R.id.options);
 
 			Animation in = AnimationUtils.loadAnimation(this,
 					android.R.anim.fade_in);
@@ -156,6 +195,12 @@ public abstract class MyActivity extends FragmentActivity {
 		}
 	}
 
+	/**
+	 * "Title Screen" was selected in the menu
+	 * 
+	 * @param v
+	 *            "Title Screen"
+	 */
 	public void goTitle(final View v) {
 
 		if (!(this instanceof MainActivity)) {
@@ -165,6 +210,12 @@ public abstract class MyActivity extends FragmentActivity {
 		}
 	}
 
+	/**
+	 * "About" was selected in the menu
+	 * 
+	 * @param v
+	 *            "About"
+	 */
 	public void goAbout(final View v) {
 
 		if (!(this instanceof About)) {
@@ -174,6 +225,12 @@ public abstract class MyActivity extends FragmentActivity {
 		}
 	}
 
+	/**
+	 * "History" was selected in the menu
+	 * 
+	 * @param v
+	 *            "History"
+	 */
 	public void goHistory(final View v) {
 
 		if (!(this instanceof History)) {
@@ -184,45 +241,42 @@ public abstract class MyActivity extends FragmentActivity {
 	}
 
 	/*
-	 * initializes pages and decisions
+	 * Initializes book, decisions, and setting
 	 */
 	protected void populate() {
 
 		decisions = new ArrayList<SparseArray<MarkerOptions>>();
-		book = new ArrayList<ArrayList<Drawable>>();
+		book = new ArrayList<ArrayList<String>>();
 
 		// Read in from .txt files
 		try {
-			BufferedReader pageReader = new BufferedReader(
-					new InputStreamReader(getAssets().open("pages.txt")));
-			BufferedReader decisionReader = new BufferedReader(
-					new InputStreamReader(getAssets().open("decisions.txt")));
+			BufferedReader reader = new BufferedReader(new InputStreamReader(
+					getAssets().open("pages.txt")));
 
 			try {
 
-				String line = pageReader.readLine();
+				String line = reader.readLine();
 
 				while (line != null && !line.equals("")) {
 					line = line.replace(" ", "");
 
 					if (line.startsWith("--"))
-						book.add(new ArrayList<Drawable>());
+						book.add(new ArrayList<String>());
 
-					else {
-						InputStream is = getAssets().open(line);
-						Drawable d = Drawable.createFromStream(is, null);
-						book.get(book.size() - 1).add(d);
-					}
+					else
+						book.get(book.size() - 1).add(line);
 
-					line = pageReader.readLine();
+					line = reader.readLine();
 				}
 
-				line = decisionReader.readLine();
+				reader = new BufferedReader(new InputStreamReader(getAssets()
+						.open("decisions.txt")));
+				line = reader.readLine();
 
 				while (line != null && !line.equals("")) {
 
 					// gets rid of --# line
-					line = decisionReader.readLine();
+					line = reader.readLine();
 					line = line.replace("{", "");
 					line = line.replace("}", "");
 					line = line.replace(" ", "");
@@ -242,10 +296,10 @@ public abstract class MyActivity extends FragmentActivity {
 					for (int j = 0; j < s.size(); j++) {
 
 						MarkerOptions m = new MarkerOptions();
-						m.title(decisionReader.readLine());
-						m.snippet(decisionReader.readLine());
+						m.title(reader.readLine());
+						m.snippet(reader.readLine());
 
-						line = decisionReader.readLine();
+						line = reader.readLine();
 						double lat = Double.valueOf(line.substring(0,
 								line.indexOf(',')));
 						double lng = Double.valueOf(line.substring(line
@@ -258,11 +312,16 @@ public abstract class MyActivity extends FragmentActivity {
 					}
 
 					decisions.add(s);
-					line = decisionReader.readLine();
+					line = reader.readLine();
 				}
 
-				pageReader.close();
-				decisionReader.close();
+				reader = new BufferedReader(new InputStreamReader(getAssets()
+						.open("setting.txt")));
+
+				setting = new LatLng(Double.valueOf(reader.readLine()),
+						Double.valueOf(reader.readLine()));
+
+				reader.close();
 
 			} catch (IOException e) {
 				e.printStackTrace();

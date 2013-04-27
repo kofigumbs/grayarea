@@ -1,30 +1,30 @@
-George Williams probably knows what’s happening
-IN CSIC…
+George Williams probably knows what's happening
+IN CSIC...
 	I find room 1101 and knock on the door. 
 	- Excuse me.
-	He doesn’t look up.
-	- Excuse me. I’m looking for a, um, Professor Williams?
+	He doesn't look up.
+	- Excuse me. I'm looking for a, um, Professor Williams?
 	The man turns to me, but his expression is blank.
 	- Do you know Professor Williams?
 	- [PW] Yes, I am Professor Williams.
-	- I, well, messed with something…that I probably shouldn’t have…and now I don’t know what’s going on. Everything looks different.
-	He doesn’t say anything. He just watches me. Or seems to. Maybe he’s busy thinking about something else.
+	- I, well, messed with something...that I probably shouldn't have...and now I don't know what's going on. Everything looks different.
+	He doesn't say anything. He just watches me. Or seems to. Maybe he's busy thinking about something else.
 	- Do you know what has happened to me?
 	- [PW] Yes.
 	- Well, what happened?
 	- [PW] You have entered the virtual University of Maryland campus.
-	- Oh. Okay. Wow. Technology these days…Am I going to be here forever?
+	- Oh. Okay. Wow. Technology these days...Am I going to be here forever?
 	- [PW] You will be here until the virtual campus is complete.
 	- What does that mean?
 	- [PW] You have entered an incomplete virtual world. There is currently no exit for users without system administrator access.
-	- Oh. Is that why the door – portal disappeared when I walked through it?
+	- Oh. Is that why the door - portal disappeared when I walked through it?
 	- [PW] Yes.
 	- So when will the campus be complete?
 	- [PW] Based on the current timeline, one year.
-	- I’m not sure I want to be here for an entire year.
-	- What’s the point of this place anyway?
+	- I'm not sure I want to be here for an entire year.
+	- What's the point of this place anyway?
 	- [PW] The purpose is academic investigation.
-	- Huh. That’s very vague.
+	- Huh. That's very vague.
 	- Is there any way for me to leave before the portal is complete?
 	- [PW] It is possible.
 	- Well how?

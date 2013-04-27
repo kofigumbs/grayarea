@@ -3,19 +3,19 @@ IN CSIC...
 	- Professor Williams?
 	- [PW] Yes? Hello.
 	- Excuse me, I just have some questions.
-	- [PW] If you’re with the Diamondback, there’s nothing I can tell you.
-	- No, I’m not a reporter. You’ve never met me before, but I know some things about your project. You see I went to Stamp, snooping around...
-	- [PW] So you’re the student who entered the virtual world. You shouldn’t have done that – I’m surprised to see that you’re even here! It’s not yet complete.
-	- I’m aware. And I want to help finish it.
-	- [PW] Listen, I’m not going to waste my time punishing you for something. It wasn’t really your fault. But that world isn’t meant for students.
-	- Then what’s the point?
-	- [PW] It’s for professors, faculty. To explore academia. Explore anything.
-	- That’s ridiculous!
+	- [PW] If you're with the Diamondback, there's nothing I can tell you.
+	- No, I’m not a reporter. You've never met me before, but I know some things about your project. You see I went to Stamp, snooping around...
+	- [PW] So you're the student who entered the virtual world. You shouldn't have done that - I'm surprised to see that you're even here! It's not yet complete.
+	- I'm aware. And I want to help finish it.
+	- [PW] Listen, I'm not going to waste my time punishing you for something. It wasn't really your fault. But that world isn't meant for students.
+	- Then what's the point?
+	- [PW] It's for professors, faculty. To explore academia. Explore anything.
+	- That's ridiculous!
 	- [PW] Well, I, the university, all of us, we never really considered the students. And yet here we are and I have my first test run with a student. What did you think?
-	- Being able to know information in a moment’s notice was pretty cool. Some of it was a bit too strange, though. It needs some work.
-	- [PW] Well, it’s still under construction. You’re pretty bold. Students, hm. You’ve got me thinking. If you think there are so many problems with what I’ve created. Would you like to join the team?
+	- Being able to know information in a moment's notice was pretty cool. Some of it was a bit too strange, though. It needs some work.
+	- [PW] Well, it's still under construction. You're pretty bold. Students, hm. You've got me thinking. If you think there are so many problems with what I've created. Would you like to join the team?
 	- Of course!
-	- [PW] We’ll have to convince administration. It’ll be a challenge.
+	- [PW] We'll have to convince administration. It'll be a challenge.
 	- In the meantime, you can show me all the cool features of the virtual world.
 	- [PW] All right.
 	Now this is the college experience.

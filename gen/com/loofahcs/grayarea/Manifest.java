@@ -9,8 +9,6 @@ package com.loofahcs.grayarea;
 
 public final class Manifest {
     public static final class permission {
-        /**  GMAPS stuff 
-         */
         public static final String MAPS_RECEIVE="id.com.example.grayarea.permission.MAPS_RECEIVE";
     }
 }

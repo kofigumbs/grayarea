@@ -6,8 +6,11 @@ import java.io.InputStreamReader;
 import android.os.Bundle;
 import android.widget.TextView;
 
-/*
- * Controls About screen
+/**
+ * About page Activity.
+ * 
+ * @author Loofah Computer Systems
+ * 
  */
 public class About extends MyActivity {
 
@@ -24,9 +27,7 @@ public class About extends MyActivity {
 		text.setClickable(false);
 	}
 
-	/*
-	 * Reads from about.txt
-	 */
+	// Reads from about.txt
 	private String getMyText() {
 
 		String toDisplay = "\n";

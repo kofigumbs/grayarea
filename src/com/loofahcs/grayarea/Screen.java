@@ -1,5 +1,10 @@
 package com.loofahcs.grayarea;
 
+import java.io.IOException;
+import java.io.InputStream;
+
+import android.content.res.AssetManager;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -9,15 +14,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+/**
+ * Container class for swipe transitions. Based heavily on examples from Google.
+ * 
+ * @author Loofah Computer Systems
+ * 
+ */
 public class Screen {
 
-	/*
-	 * Classes for panel swipe transitions Based heavily on examples from Google
-	 */
 	public static class ScreenSlidePageFragment extends Fragment {
 
 		ImageView iv;
 		int position;
+
+		// Allows for dynamic page loading
+		static AssetManager am;
 
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -26,9 +37,16 @@ public class Screen {
 			ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.panel,
 					container, false);
 
-			iv = (ImageView) rootView.findViewById(R.id.image);
-			iv.setImageDrawable(MyActivity.book.get(MyActivity.chapter).get(
-					position));
+			try {
+				InputStream is = am.open(MyActivity.book
+						.get(MyActivity.chapter).get(position));
+				Drawable d = Drawable.createFromStream(is, null);
+				iv = (ImageView) rootView.findViewById(R.id.image);
+				iv.setImageDrawable(d);
+
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 
 			return rootView;
 		}
@@ -37,9 +55,10 @@ public class Screen {
 			super();
 		}
 
-		public static Fragment create(int p) {
+		public static Fragment create(int p, AssetManager am) {
 
 			ScreenSlidePageFragment s = new ScreenSlidePageFragment();
+			ScreenSlidePageFragment.am = am;
 			s.position = p;
 
 			return s;
@@ -47,8 +66,17 @@ public class Screen {
 	}
 
 	public static class MyAdapter extends FragmentPagerAdapter {
+
+		AssetManager am;
+
 		public MyAdapter(android.support.v4.app.FragmentManager fm) {
 			super(fm);
+		}
+
+		public MyAdapter(android.support.v4.app.FragmentManager fm,
+				AssetManager am) {
+			super(fm);
+			this.am = am;
 		}
 
 		@Override
@@ -59,7 +87,7 @@ public class Screen {
 		@Override
 		public Fragment getItem(int position) {
 
-			return ScreenSlidePageFragment.create(position);
+			return ScreenSlidePageFragment.create(position, am);
 		}
 	}
 

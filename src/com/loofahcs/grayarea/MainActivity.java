@@ -1,25 +1,32 @@
 package com.loofahcs.grayarea;
 
+import java.io.IOException;
 import java.util.Stack;
 
 import android.media.AsyncPlayer;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 
+/**
+ * Home page Activity.
+ * 
+ * @author Loofah Computer Systems
+ * 
+ */
 public class MainActivity extends MyActivity {
 
-	Button start;
 	Button load;
 	Button cont;
+	ImageView background;
 
 	static SharedPreferences sp;
 
@@ -28,103 +35,74 @@ public class MainActivity extends MyActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		start = (Button) findViewById(R.id.start);
 		load = (Button) findViewById(R.id.load);
 		cont = (Button) findViewById(R.id.cont);
+		background = (ImageView) findViewById(R.id.gray);
 
-		// Setup music
-		if (mp == null)
+		try {
+			background.setImageDrawable(Drawable.createFromStream(getAssets()
+					.open("titlescreen.jpg"), null));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		// indicates files not loaded
+		if (sp == null) {
+
+			MainActivity.this.populate();
+
 			mp = new AsyncPlayer("mp");
 
-		// Load splash screen
-		new AsyncTask<Void, Void, Void>() {
-			private final ProgressDialog dialog = new ProgressDialog(
-					MainActivity.this);
+			sp = getSharedPreferences("ga_data", Context.MODE_PRIVATE);
 
-			@Override
-			protected void onPreExecute() {
+			chapter = sp.getInt("chapter", 0);
+			completed = sp.getBoolean("completed", false);
+			cheat = sp.getBoolean("cheat", false);
 
-				if (sp == null) {
-					dialog.setMessage("Initializing...");
-					dialog.setCancelable(false);
-					dialog.setCanceledOnTouchOutside(false);
-					dialog.show();
-				}
+			playing = sp.getBoolean("music", true);
+			setMusic();
 
-			}
+			path = new Stack<Integer>();
 
-			@Override
-			protected Void doInBackground(Void... params) {
+			for (int i = 0; i < sp.getInt("path_size", 0); i++)
+				path.push(sp.getInt(Integer.toString(i), 0));
 
-				if (sp == null) {
-					sp = getPreferences(Context.MODE_PRIVATE);
-					chapter = sp.getInt("chapter", 0);
-					completed = sp.getBoolean("completed", false);
-					cheat = sp.getBoolean("cheat", false);
-
-					String s = sp.getString("path", "");
-					path = new Stack<Integer>();
-
-					while (!s.equals("")) {
-						path.push(Integer.valueOf(s.substring(0, s.indexOf(","))));
-
-						if (s.contains(","))
-							s = s.substring(s.indexOf(",") + 1);
-
-						else
-							s = "";
-					}
-
-					MainActivity.this.populate();
-				}
-
-				return null;
-			}
-
-			@Override
-			protected void onPostExecute(Void result) {
-
-				if (dialog.isShowing()) {
-					dialog.dismiss();
-				}
-			}
-
-		}.execute();
-
+		}
 	}
 
 	@Override
 	public void onResume() {
 		super.onResume();
 
-		if (chapter == 0 && !completed)
-			cont.setEnabled(false);
-		else
-			cont.setEnabled(true);
+		cont.setEnabled(getSharedPreferences("ga_data", Context.MODE_PRIVATE)
+				.getBoolean("started", false));
 
-		if (completed)
-			load.setVisibility(View.VISIBLE);
-		else
-			load.setVisibility(View.INVISIBLE);
+		load.setVisibility(completed ? View.VISIBLE : View.INVISIBLE);
 
 	}
 
 	@Override
 	public void onPause() {
+		super.onPause();
 
 		if (isFinishing()) {
 			playing = false;
 			setMusic();
 		}
 
-		super.onPause();
 	}
 
-	// called by start button on home screen
+	/**
+	 * Start button was pressed
+	 * 
+	 * @param v
+	 *            Start button
+	 */
 	public void goStart(View v) {
 		final View view = v;
 
-		if (completed || chapter != 0)
+		// Restarting progress case
+		if (cont.isEnabled())
 			new AlertDialog.Builder(MainActivity.this)
 					.setMessage(
 							"Do you really want to start a new story?\n"
@@ -146,15 +124,36 @@ public class MainActivity extends MyActivity {
 									completed = false;
 									cheat = false;
 
+									SharedPreferences.Editor editor = getSharedPreferences(
+											"ga_data", Context.MODE_PRIVATE)
+											.edit();
+
+									editor.putInt("page", 0);
+									editor.putBoolean("can_split", false);
+									editor.apply();
+
 									goContinue(view);
 								}
 							}).setNegativeButton(android.R.string.no, null)
 					.show();
 
-		else
+		else {
+
+			SharedPreferences.Editor editor = getSharedPreferences("ga_data",
+					Context.MODE_PRIVATE).edit();
+			editor.putBoolean("started", true);
+			editor.apply();
+
 			goContinue(v);
+		}
 	}
 
+	/**
+	 * Continue button was pressed
+	 * 
+	 * @param v
+	 *            Continue button
+	 */
 	public void goContinue(View v) {
 
 		Intent i = new Intent(this, Panel.class);
@@ -162,6 +161,12 @@ public class MainActivity extends MyActivity {
 		startActivity(i);
 	}
 
+	/**
+	 * Jump button was pressed
+	 * 
+	 * @param v
+	 *            Jump button
+	 */
 	public void goJump(View v) {
 
 		Intent i = new Intent(this, Jumper.class);
