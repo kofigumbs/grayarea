@@ -31,7 +31,7 @@ Stamp Student Union
 {8,9}
 I want to return to reality and never come back.
 Hornbake Plaza
-38.993838,-76.949356
+38.988035,-76.942627
 I want to try the password on the original portal that disappeared.
 Stamp Student Union
 38.988081,-76.944738

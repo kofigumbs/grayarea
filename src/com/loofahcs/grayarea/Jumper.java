@@ -11,6 +11,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View.OnClickListener;
 import android.view.HapticFeedbackConstants;
@@ -22,6 +23,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * Load Activity.
@@ -33,6 +35,15 @@ import android.widget.TextView;
  * 
  */
 public class Jumper extends MyActivity {
+
+	@Override
+	protected void onCreate(Bundle b) {
+		super.onCreate(b);
+
+		Toast.makeText(this, "Tap any chapter to jump back to it.",
+				Toast.LENGTH_LONG).show();
+
+	}
 
 	@Override
 	public void onResume() {
