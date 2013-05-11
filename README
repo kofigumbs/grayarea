@@ -5,11 +5,12 @@ OVERVIEW
 
 DESCRIPTION
  The defining characteristic of Gray Area is its location-based decision engine.  In summary, to make Decisons and progress further in the story, the user must physically move to a particular location on campus.  Thus, this application uses the Google Maps v2 API to track the user's position.  This feature is explained to the user in Tutorial.
- This version has all of the final images for our story, but a Usage Guide for editing the assets folder (to modify the Book without touching the code) will also come soon. 
+ This version has all of the final images for our story, but a Usage Guide for editing the assets folder (to modify the Book without touching the code) is included in usage.txt. 
  Keywords:
   Panel) images that will tell the story (remember, this is a comic book)
   Chapter) set of Panels bounded by decision(s)
   Decision) point where story diverges (think Choose-Your-Own-Adventure)
+  Ending) chapter without subsequent decision
   Book) the collection of Panels, Chapters, and Decisions that comprises the full story of the application
   Path) how we store chapters visited in order to implement History and Jump
   History) where users can see the text of what they've read so far without flipping through the panels

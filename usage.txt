@@ -1,0 +1,41 @@
+This guide should assist you with modifying the contents of /grayarea/assets so that ou can customize the app and even make your very own version. There are are only 5 files that must be edited, but of course some of these have implications that you add or modify others.
+
+1. pages.txt
+This file controls the book's story. Here are some sample lines:
+		--0
+		0/1.png
+		0/2.png
+As you can see, it is a very simple format with only a couple rules:
+	A) "--X" indicates the start of a new chapter, where 'X' must be replaced by the next ordinal number starting at 0. In other words, the "--" is used to distinguish a new chapter, and the numbers cannot jump around or skip.
+	B) Every line that is not the start of a chapter, must be the path of an image file within /grayarea/assets. It is not necessary, however, that you organize them in folders (as we have).
+	C) This file must begin with a chapter number, particularly chapter 0. The first line should always be "--0".
+	D) Avoid ALL unnecessary whitespace as the program is not yet robust enough to ignore them.
+
+3. decisions.txt
+This file controls the book's decisions. Here are some sample lines:
+		--0
+		{1,3}
+		Decision 1
+		Location 1
+		38.989991,-76.936205
+		Decision 3
+		Location 3
+		38.992321,-76.946671
+The rules for the format are as follows:
+	A) "--X" indicates the start of a new chapter, where 'X' must be replaced by the next ordinal number starting at 0. In other words, the "--" is used to distinguish a new chapter, and the numbers cannot jump around or skip. There should be fewer decisions as there are chapters, and each decision must have an associated chapter that is mentioned in pages.txt.
+	B) The line that follows "--X" should be a set of chapter numbers that can come from that decision surrounded by curly braces and separated by commas. (Let 'N' be the number of possible output chapters in our decision. N = 2 in this case.)
+	C) The next 3*N lines should be the decision description, location description, and geographical coordinates (with a comma separating the lattitude and longitude). respectively. This pattern should simply repeat so that each chapter within the curly braces has been described.
+	D) This file must begin with a chapter number, particularly chapter 0. The first line should always be "--0".
+	E) Avoid ALL unnecessary whitespace as the program is not yet robust enough to ignore them.
+	F) One implication from the structure of pages.txt and decisions.txt is that chapters and endings (chapters without decisions) should not be interspersed. Endings must be the last chapters of the story and should not be listed in this file.
+
+2. setting.txt
+This file is simply the geographical location where the story will take place. It is used to center the decision map. There should be 2 lines in this file: the lattitude and the longitude (respectively) of the area's center point. Here is a complete sample setting.txt file:
+		38.989991
+		-76.936205
+
+4. titlescreen.jpg
+As its name suggests, this file is simply the image you want to display on the main screen. The only line in this file should be the path of an image file within /grayarea/assets.
+
+5. about.txt
+Everything in this file will be displayed as plain text in the "About" screen within the app.

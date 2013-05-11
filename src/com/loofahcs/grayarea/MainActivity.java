@@ -26,6 +26,7 @@ public class MainActivity extends MyActivity {
 
 	Button load;
 	Button cont;
+	Button start;
 	ImageView background;
 
 	static SharedPreferences sp;
@@ -35,6 +36,7 @@ public class MainActivity extends MyActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
+		start = (Button) findViewById(R.id.start);
 		load = (Button) findViewById(R.id.load);
 		cont = (Button) findViewById(R.id.cont);
 		background = (ImageView) findViewById(R.id.gray);
@@ -74,10 +76,14 @@ public class MainActivity extends MyActivity {
 	public void onResume() {
 		super.onResume();
 
-		cont.setEnabled(getSharedPreferences("ga_data", Context.MODE_PRIVATE)
-				.getBoolean("started", false));
+		boolean started = getSharedPreferences("ga_data", Context.MODE_PRIVATE)
+				.getBoolean("started", false);
+
+		cont.setEnabled(started);
 
 		load.setVisibility(completed ? View.VISIBLE : View.INVISIBLE);
+
+		start.setText(started ? "Restart" : "Start");
 
 	}
 
@@ -102,11 +108,15 @@ public class MainActivity extends MyActivity {
 		final View view = v;
 
 		// Restarting progress case
-		if (cont.isEnabled())
+		if (cont.isEnabled()) {
+
+			String message = "Do you really want to start a new story?\n"
+					+ "All progress will be lost!"
+					+ (completed ? "\n\nUse Jump if you do not want to lose extra features!"
+							: "");
+
 			new AlertDialog.Builder(MainActivity.this)
-					.setMessage(
-							"Do you really want to start a new story?\n"
-									+ "All achievements will be lost!")
+					.setMessage(message)
 					.setPositiveButton(android.R.string.yes,
 							new DialogInterface.OnClickListener() {
 
@@ -136,6 +146,7 @@ public class MainActivity extends MyActivity {
 								}
 							}).setNegativeButton(android.R.string.no, null)
 					.show();
+		}
 
 		else {
 
