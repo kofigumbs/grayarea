@@ -14,11 +14,35 @@ update : Msg a -> Model a -> ( Model a, Cmd (Msg a) )
 update msg model =
     flip (,) Cmd.none <|
         case ( msg, model ) of
-            ( PreviousPage, Page no chapter (Story config) ) ->
-                Title chapter (Story config)
+            ( NextPage, Title chapter story ) ->
+                case ( List.length chapter.next, chapter.length ) of
+                    ( 0, 0 ) ->
+                        End story
+
+                    ( _, 0 ) ->
+                        Decision chapter story
+
+                    _ ->
+                        Page 1 chapter story
+
+            ( PreviousPage, Page no chapter story ) ->
+                case no of
+                    1 ->
+                        Title chapter story
+
+                    _ ->
+                        Page (no - 1) chapter story
+
+            ( PreviousPage, Decision chapter story ) ->
+                case chapter.length of
+                    0 ->
+                        Title chapter story
+
+                    _ ->
+                        Page chapter.length chapter story
 
             _ ->
-                Debug.crash "update"
+                model
 
 
 view : Model a -> Html (Msg a)
@@ -31,7 +55,7 @@ view model =
 
 -- Page no content story ->
 --     View.page (source no content story)
--- Decision content story ->
+-- Decision content (Story { _, _, _, table }) ->
 --     View.decision (plot content story)
 -- End story ->
 --     View.end story
