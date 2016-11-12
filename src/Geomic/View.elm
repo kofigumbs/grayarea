@@ -1,41 +1,32 @@
-module View exposing (..)
+module Geomic.View exposing (..)
 
 import Html exposing (Html)
 import Html.Attributes as Html
 import Html.Events as Html
-import Domain exposing (..)
 
 
-page : String -> ( Bool, Bool ) -> Html Msg
-page url ( disablePrevious, disableNext ) =
+page : String -> msg -> msg -> Html msg
+page url previous next =
     Html.div
-        [ Html.style
-            [ ( "display", "flex" )
-            ]
-        ]
-        [ button
-            [ Html.onClick PreviousPage
-            , Html.disabled disablePrevious
-            ]
-            [ Html.text "Previous"
-            ]
-        , Html.img
-            [ Html.src url
-            ]
-            []
-        , button
-            [ Html.onClick NextPage
-            , Html.disabled disableNext
-            ]
-            [ Html.text "Next"
-            ]
+        [ Html.style [ ( "display", "flex" ) ] ]
+        [ button [ Html.onClick previous ] [ Html.text "Previous" ]
+        , Html.img [ Html.src url ] []
+        , button [ Html.onClick next ] [ Html.text "Next" ]
         ]
 
 
-button : List (Html.Attribute Msg) -> List (Html Msg) -> Html Msg
+decision _ =
+    Debug.crash
+
+
+end _ =
+    Debug.crash
+
+
+button : List (Html.Attribute msg) -> List (Html msg) -> Html msg
 button attributes innerHtml =
     let
-        styles : Html.Attribute Msg
+        styles : Html.Attribute msg
         styles =
             Html.style
                 [ ( "padding", "1.05rem 2.75rem" )
