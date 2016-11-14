@@ -36,6 +36,14 @@ chapterThree =
     }
 
 
+chapterFour =
+    { title = "Final-Chapter"
+    , description = "it's over"
+    , length = 3
+    , next = []
+    }
+
+
 table : Content -> Chapter Content
 table content =
     case content of
@@ -151,6 +159,28 @@ all =
                                     ( 1
                                     , "google.com/Single%20Ladies/001.png"
                                     , chapterTwo
+                                    )
+                                    ( no, src, chapter )
+
+                            _ ->
+                                Expect.fail "should have matched Page"
+            , test
+                "NextPage -> Page n -> Page (n + 1)"
+              <|
+                \() ->
+                    let
+                        model =
+                            Page ( 1, "" ) chapterFour story
+
+                        updated =
+                            Story.update NextPage model
+                    in
+                        case fst updated of
+                            Page ( no, src ) chapter _ ->
+                                Expect.equal
+                                    ( 2
+                                    , "google.com/Final-Chapter/002.png"
+                                    , chapterFour
                                     )
                                     ( no, src, chapter )
 

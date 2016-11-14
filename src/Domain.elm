@@ -18,7 +18,7 @@ type Model content
 type alias Story content =
     { name : String
     , rootUrl : String
-    , format : String
+    , imageFormat : String
     , table : content -> Chapter content
     }
 

@@ -27,6 +27,9 @@ update msg model =
                     _ ->
                         Page (source 1 chapter story) chapter story
 
+            ( NextPage, Page ( no, _ ) chapter story ) ->
+                Page (source (no + 1) chapter story) chapter story
+
             ( PreviousPage, Page ( no, _ ) chapter story ) ->
                 case no of
                     1 ->
@@ -56,7 +59,7 @@ source no chapter story =
         ++ "/"
         ++ String.padLeft 3 '0' (toString no)
         ++ "."
-        ++ story.format
+        ++ story.imageFormat
     )
 
 

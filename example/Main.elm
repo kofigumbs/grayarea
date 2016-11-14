@@ -175,7 +175,7 @@ main =
     Geomic.program
         { name = "Gray Area"
         , rootUrl = "https://kofi.sexy/grayarea"
-        , format = "png"
+        , imageFormat = "png"
         , table = table
         , start = Introduction
         }

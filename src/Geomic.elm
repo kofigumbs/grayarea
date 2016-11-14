@@ -13,18 +13,18 @@ type alias Chapter content =
 program :
     { name : String
     , rootUrl : String
-    , format : String
+    , imageFormat : String
     , table : a -> Chapter a
     , start : a
     }
     -> Program Never
-program { name, rootUrl, format, table, start } =
+program { name, rootUrl, imageFormat, table, start } =
     Html.App.program
         { init =
             Story.init start
                 { name = name
                 , rootUrl = rootUrl
-                , format = format
+                , imageFormat = imageFormat
                 , table = table
                 }
         , update = Story.update
