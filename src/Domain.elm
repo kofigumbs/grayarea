@@ -10,18 +10,17 @@ type Msg content
 
 type Model content
     = Title (Chapter content) (Story content)
-    | Page Int (Chapter content) (Story content)
+    | Page ( Int, String ) (Chapter content) (Story content)
     | Decision (Chapter content) (Story content)
     | End (Story content)
 
 
-type Story content
-    = Story
-        { name : String
-        , rootUrl : String
-        , format : String
-        , table : content -> Chapter content
-        }
+type alias Story content =
+    { name : String
+    , rootUrl : String
+    , format : String
+    , table : content -> Chapter content
+    }
 
 
 type alias Chapter content =

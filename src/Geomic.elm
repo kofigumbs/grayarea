@@ -19,18 +19,15 @@ program :
     }
     -> Program Never
 program { name, rootUrl, format, table, start } =
-    let
-        story =
-            Story
+    Html.App.program
+        { init =
+            Story.init start
                 { name = name
                 , rootUrl = rootUrl
                 , format = format
                 , table = table
                 }
-    in
-        Html.App.program
-            { init = Story.init start story
-            , update = Story.update
-            , view = Story.view
-            , subscriptions = Story.subscriptions
-            }
+        , update = Story.update
+        , view = Story.view
+        , subscriptions = Story.subscriptions
+        }
