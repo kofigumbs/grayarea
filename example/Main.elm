@@ -4,7 +4,7 @@ import Geomic
 
 
 type Content
-    = Introduction
+    = Zero
     | One
     | Two
     | Three
@@ -25,148 +25,198 @@ type Content
 table : Content -> Geomic.Chapter Content
 table content =
     case content of
-        Introduction ->
-            { title = "Introduction"
-            , description = ""
+        Zero ->
+            { title = "000"
             , length = 19
             , next =
-                [ ( 0, 0, One )
+                [ { place = "Stamp Student Union"
+                  , description = "Investigate the secret project."
+                  , latitude = 38.988081
+                  , longitude = -76.944738
+                  , content = One
+                  }
                 ]
             }
 
         One ->
-            { title = ""
-            , description = ""
-            , length = 0
+            { title = "001"
+            , length = 9
             , next =
-                [ ( 0, 0, Introduction )
+                [ { place = "Computer Science Instructional Center"
+                  , description = "George Williams probably knows what's happening."
+                  , latitude = 38.989991
+                  , longitude = -76.936205
+                  , content = Two
+                  }
+                , { place = "The Diner"
+                  , description = "I need to see what my friends think about what's going on."
+                  , latitude = 38.992321
+                  , longitude = -76.946671
+                  , content = Three
+                  }
                 ]
             }
 
         Two ->
-            { title = ""
-            , description = ""
-            , length = 0
+            { title = "002"
+            , length = 16
             , next =
-                [ ( 0, 0, Introduction )
+                [ { place = "McKeldin Library"
+                  , description = "Start beating the system with Professor Williams."
+                  , latitude = 38.986008
+                  , longitude = -76.94518
+                  , content = Four
+                  }
+                , { place = "Hornbake Plaza"
+                  , description = "I want to explore on my own."
+                  , latitude = 38.988035
+                  , longitude = -76.942627
+                  , content = Five
+                  }
                 ]
             }
 
         Three ->
-            { title = ""
-            , description = ""
-            , length = 0
+            { title = "003"
+            , length = 10
             , next =
-                [ ( 0, 0, Introduction )
+                [ { place = "Hornbake Plaza"
+                  , description = "They're freaking me out. I'm going to explore on my own."
+                  , latitude = 38.988035
+                  , longitude = -76.942627
+                  , content = Six
+                  }
+                , { place = "Stamp Student Union"
+                  , description = "I'm going to stick with Ali and Tim."
+                  , latitude = 38.988081
+                  , longitude = -76.944738
+                  , content = Seven
+                  }
                 ]
             }
 
         Four ->
-            { title = ""
-            , description = ""
-            , length = 0
+            { title = "004"
+            , length = 16
             , next =
-                [ ( 0, 0, Introduction )
+                [ { place = "Hornbake Plaza"
+                  , description = "I want to return to reality and never come back."
+                  , latitude = 38.988035
+                  , longitude = -76.942627
+                  , content = Eight
+                  }
+                , { place = "Stamp Student Union"
+                  , description = "I want to try the password on the original portal that disappeared."
+                  , latitude = 38.988081
+                  , longitude = -76.944738
+                  , content = Nine
+                  }
                 ]
             }
 
         Five ->
-            { title = ""
-            , description = ""
-            , length = 0
+            { title = "005"
+            , length = 11
             , next =
-                [ ( 0, 0, Introduction )
+                [ { place = "The Diner"
+                  , description = "I'm bringing Ali and Tim with me."
+                  , latitude = 38.992321
+                  , longitude = -76.946671
+                  , content = Ten
+                  }
+                , { place = "Computer Science Instructional Center"
+                  , description = "I'm finding Professor Williams in the real world."
+                  , latitude = 38.989991
+                  , longitude = -76.936205
+                  , content = Eleven
+                  }
                 ]
             }
 
         Six ->
-            { title = ""
-            , description = ""
-            , length = 0
+            { title = "006"
+            , length = 11
             , next =
-                [ ( 0, 0, Introduction )
+                [ { place = "Computer Science Instructional Center"
+                  , description = "I'm finding this Professor Williams."
+                  , latitude = 38.989991
+                  , longitude = -76.936205
+                  , content = Twelve
+                  }
+                , { place = "The Diner"
+                  , description = "I'm getting Ali and Tim."
+                  , latitude = 38.992321
+                  , longitude = -76.946671
+                  , content = Thirteen
+                  }
                 ]
             }
 
         Seven ->
-            { title = ""
-            , description = ""
-            , length = 0
+            { title = "007"
+            , length = 13
             , next =
-                [ ( 0, 0, Introduction )
+                [ { place = "Stamp Student Union"
+                  , description = "I'm going to use the password on the original doorway."
+                  , latitude = 38.988081
+                  , longitude = -76.944738
+                  , content = Fourteen
+                  }
+                , { place = "The Diner"
+                  , description = "I'm not leaving. I'll stay here."
+                  , latitude = 38.992321
+                  , longitude = -76.946671
+                  , content = Fifteen
+                  }
                 ]
             }
 
         Eight ->
-            { title = ""
-            , description = ""
-            , length = 0
-            , next =
-                [ ( 0, 0, Introduction )
-                ]
+            { title = "008"
+            , length = 8
+            , next = []
             }
 
         Nine ->
-            { title = ""
-            , description = ""
-            , length = 0
-            , next =
-                [ ( 0, 0, Introduction )
-                ]
+            { title = "009"
+            , length = 6
+            , next = []
             }
 
         Ten ->
-            { title = ""
-            , description = ""
-            , length = 0
-            , next =
-                [ ( 0, 0, Introduction )
-                ]
+            { title = "010"
+            , length = 7
+            , next = []
             }
 
         Eleven ->
-            { title = ""
-            , description = ""
-            , length = 0
-            , next =
-                [ ( 0, 0, Introduction )
-                ]
+            { title = "011"
+            , length = 10
+            , next = []
             }
 
         Twelve ->
-            { title = ""
-            , description = ""
-            , length = 0
-            , next =
-                [ ( 0, 0, Introduction )
-                ]
+            { title = "012"
+            , length = 11
+            , next = []
             }
 
         Thirteen ->
-            { title = ""
-            , description = ""
-            , length = 0
-            , next =
-                [ ( 0, 0, Introduction )
-                ]
+            { title = "013"
+            , length = 7
+            , next = []
             }
 
         Fourteen ->
-            { title = ""
-            , description = ""
-            , length = 0
-            , next =
-                [ ( 0, 0, Introduction )
-                ]
+            { title = "014"
+            , length = 15
+            , next = []
             }
 
         Fifteen ->
-            { title = ""
-            , description = ""
-            , length = 0
-            , next =
-                [ ( 0, 0, Introduction )
-                ]
+            { title = "015"
+            , length = 4
+            , next = []
             }
 
 
@@ -177,5 +227,5 @@ main =
         , rootUrl = "https://kofi.sexy/grayarea"
         , imageFormat = "png"
         , table = table
-        , start = Introduction
+        , start = Zero
         }

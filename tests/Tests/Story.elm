@@ -10,58 +10,75 @@ type Content
     = One
     | Two
     | Three
+    | Four
 
 
+chapterOne : Chapter Content
 chapterOne =
     { title = "Great Beginnings"
-    , description = "and small heroes"
     , length = 1
-    , next = [ ( 1, 2, Two ) ]
+    , next =
+        [ { place = "Denver"
+          , description = "Crunchy Granola"
+          , latitude = 39.7642548
+          , longitude = -104.9951952
+          , content = Two
+          }
+        ]
     }
 
 
+chapterTwo : Chapter Content
 chapterTwo =
     { title = "Single Ladies"
-    , description = "put your hands up"
     , length = 0
     , next = []
     }
 
 
+chapterThree : Chapter Content
 chapterThree =
     { title = "Champagne Papi"
-    , description = "yaboi"
     , length = 0
-    , next = [ ( 3, 4, Two ) ]
+    , next =
+        [ { place = "Boulder"
+          , description = "staying small"
+          , latitude = 40.0292889
+          , longitude = -105.3100173
+          , content = Two
+          }
+        ]
     }
 
 
+chapterFour : Chapter Content
 chapterFour =
     { title = "Final-Chapter"
-    , description = "it's over"
     , length = 3
     , next = []
     }
 
 
-table : Content -> Chapter Content
-table content =
-    case content of
-        One ->
-            chapterOne
-
-        Two ->
-            chapterTwo
-
-        Three ->
-            chapterThree
-
-
-story =
+story : Chapter Content -> Story Content
+story chapter =
     { name = "Test Story"
     , rootUrl = "google.com"
-    , format = "png"
-    , table = table
+    , imageFormat = "png"
+    , current = chapter
+    , table =
+        \content ->
+            case content of
+                One ->
+                    chapterOne
+
+                Two ->
+                    chapterTwo
+
+                Three ->
+                    chapterThree
+
+                Four ->
+                    chapterFour
     }
 
 
@@ -75,19 +92,16 @@ all =
                 \() ->
                     let
                         model =
-                            Title chapterOne story
+                            Title (story chapterOne)
 
                         updated =
                             Story.update NextPage model
                     in
                         case fst updated of
-                            Page ( no, src ) chapter _ ->
+                            Page no updatedStory ->
                                 Expect.equal
-                                    ( 1
-                                    , "google.com/Great%20Beginnings/001.png"
-                                    , chapterOne
-                                    )
-                                    ( no, src, chapter )
+                                    ( 1, chapterOne )
+                                    ( no, updatedStory.current )
 
                             _ ->
                                 Expect.fail "should have matched Page"
@@ -97,14 +111,14 @@ all =
                 \() ->
                     let
                         model =
-                            Page ( 1, "" ) chapterOne story
+                            Page 1 (story chapterOne)
 
                         updated =
                             Story.update PreviousPage model
                     in
                         case fst updated of
-                            Title chapter _ ->
-                                Expect.equal chapterOne chapter
+                            Title updatedStory ->
+                                Expect.equal chapterOne updatedStory.current
 
                             _ ->
                                 Expect.fail "should have matched Title"
@@ -114,14 +128,14 @@ all =
                 \() ->
                     let
                         model =
-                            Title chapterTwo story
+                            Title (story chapterTwo)
 
                         updated =
                             Story.update NextPage model
                     in
                         case fst updated of
-                            End _ ->
-                                Expect.pass
+                            End updatedStory ->
+                                Expect.equal chapterTwo updatedStory.current
 
                             _ ->
                                 Expect.fail "should have matched End"
@@ -131,14 +145,14 @@ all =
                 \() ->
                     let
                         model =
-                            Title chapterThree story
+                            Title (story chapterThree)
 
                         updated =
                             Story.update NextPage model
                     in
                         case fst updated of
-                            Decision chapter _ ->
-                                Expect.equal chapterThree chapter
+                            Decision updatedStory ->
+                                Expect.equal chapterThree updatedStory.current
 
                             _ ->
                                 Expect.fail "should have matched Decision"
@@ -148,19 +162,16 @@ all =
                 \() ->
                     let
                         model =
-                            Page ( 2, "" ) chapterTwo story
+                            Page 2 (story chapterTwo)
 
                         updated =
                             Story.update PreviousPage model
                     in
                         case fst updated of
-                            Page ( no, src ) chapter _ ->
+                            Page no updatedStory ->
                                 Expect.equal
-                                    ( 1
-                                    , "google.com/Single%20Ladies/001.png"
-                                    , chapterTwo
-                                    )
-                                    ( no, src, chapter )
+                                    ( 1, chapterTwo )
+                                    ( no, updatedStory.current )
 
                             _ ->
                                 Expect.fail "should have matched Page"
@@ -170,19 +181,16 @@ all =
                 \() ->
                     let
                         model =
-                            Page ( 1, "" ) chapterFour story
+                            Page 1 (story chapterFour)
 
                         updated =
                             Story.update NextPage model
                     in
                         case fst updated of
-                            Page ( no, src ) chapter _ ->
+                            Page no updatedStory ->
                                 Expect.equal
-                                    ( 2
-                                    , "google.com/Final-Chapter/002.png"
-                                    , chapterFour
-                                    )
-                                    ( no, src, chapter )
+                                    ( 2, chapterFour )
+                                    ( no, updatedStory.current )
 
                             _ ->
                                 Expect.fail "should have matched Page"
@@ -192,19 +200,16 @@ all =
                 \() ->
                     let
                         model =
-                            Decision chapterOne story
+                            Decision (story chapterOne)
 
                         updated =
                             Story.update PreviousPage model
                     in
                         case fst updated of
-                            Page ( no, src ) chapter _ ->
+                            Page no updatedStory ->
                                 Expect.equal
-                                    ( chapterOne.length
-                                    , "google.com/Great%20Beginnings/001.png"
-                                    , chapterOne
-                                    )
-                                    ( no, src, chapter )
+                                    ( 1, chapterOne )
+                                    ( no, updatedStory.current )
 
                             _ ->
                                 Expect.fail "should have matched Page"
@@ -214,16 +219,96 @@ all =
                 \() ->
                     let
                         model =
-                            Decision chapterTwo story
+                            Decision (story chapterTwo)
 
                         updated =
                             Story.update PreviousPage model
                     in
                         case fst updated of
-                            Title chapter _ ->
-                                Expect.equal chapterTwo chapter
+                            Title updatedStory ->
+                                Expect.equal chapterTwo updatedStory.current
 
                             _ ->
                                 Expect.fail "should have matched Title"
+            , test
+                "NextPage -> Page (n == chapter.length) -> Decision"
+              <|
+                \() ->
+                    let
+                        model =
+                            Page 1 (story chapterOne)
+
+                        updated =
+                            Story.update NextPage model
+                    in
+                        case fst updated of
+                            Decision updatedStory ->
+                                Expect.equal chapterOne updatedStory.current
+
+                            _ ->
+                                Expect.fail "should have matched Decision"
+            , test
+                "NextPage -> Page (n == chapter.length, next.length == 0) -> End"
+              <|
+                \() ->
+                    let
+                        model =
+                            Page 3 (story chapterFour)
+
+                        updated =
+                            Story.update NextPage model
+                    in
+                        case fst updated of
+                            End updatedStory ->
+                                Expect.equal chapterFour updatedStory.current
+
+                            _ ->
+                                Expect.fail "should have matched End"
+            , test
+                "PreviousPage -> End -> Page"
+              <|
+                \() ->
+                    let
+                        model =
+                            End (story chapterTwo)
+
+                        updated =
+                            Story.update PreviousPage model
+                    in
+                        case fst updated of
+                            Title updatedStory ->
+                                Expect.equal chapterTwo updatedStory.current
+
+                            _ ->
+                                Expect.fail "should have matched Title"
+            , test
+                "PreviousPage -> End (chapter.length == 0) -> Title"
+              <|
+                \() ->
+                    let
+                        model =
+                            End (story chapterFour)
+
+                        updated =
+                            Story.update PreviousPage model
+                    in
+                        case fst updated of
+                            Page no updatedStory ->
+                                Expect.equal ( 3, chapterFour ) ( no, updatedStory.current )
+
+                            _ ->
+                                Expect.fail "should have matched Page"
+            ]
+        , describe "source"
+            [ test "converts 1 on chapterOne" <|
+                \() ->
+                    Expect.equal
+                        "google.com/Great%20Beginnings/001.png"
+                        (Story.source 1 (story chapterOne))
+            , test "converts 2 on chapterFour" <|
+                \() ->
+                    Expect.equal
+                        "google.com/Final-Chapter/002.png"
+                        (Story.source 2 (story chapterFour))
             ]
         ]

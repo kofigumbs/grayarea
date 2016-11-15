@@ -21,10 +21,11 @@ program :
 program { name, rootUrl, imageFormat, table, start } =
     Html.App.program
         { init =
-            Story.init start
+            Story.init
                 { name = name
                 , rootUrl = rootUrl
                 , imageFormat = imageFormat
+                , current = table start
                 , table = table
                 }
         , update = Story.update

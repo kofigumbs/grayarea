@@ -1,82 +1,111 @@
-module Geomic.Story exposing (init, update, view, subscriptions)
+module Geomic.Story exposing (..)
 
 import String
 import Html exposing (Html)
 import Http
 import Domain exposing (..)
-import Geomic.View
+import Geomic.View as View
 
 
-init : a -> Story a -> ( Model a, Cmd (Msg a) )
-init start story =
-    ( Title (story.table start) story, Cmd.none )
+init : Story a -> ( Model a, Cmd (Msg a) )
+init story =
+    ( Title story, Cmd.none )
 
 
 update : Msg a -> Model a -> ( Model a, Cmd (Msg a) )
 update msg model =
     flip (,) Cmd.none <|
         case ( msg, model ) of
-            ( NextPage, Title chapter story ) ->
-                case ( List.length chapter.next, chapter.length ) of
+            ( PreviousPage, Page no story ) ->
+                case no of
+                    1 ->
+                        Title story
+
+                    _ ->
+                        Page (no - 1) story
+
+            ( PreviousPage, Decision story ) ->
+                case story.current.length of
+                    0 ->
+                        Title story
+
+                    _ ->
+                        Page story.current.length story
+
+            ( PreviousPage, End story ) ->
+                case story.current.length of
+                    0 ->
+                        Title story
+
+                    _ ->
+                        Page story.current.length story
+
+            ( NextPage, Title story ) ->
+                case ( List.length story.current.next, story.current.length ) of
                     ( 0, 0 ) ->
                         End story
 
                     ( _, 0 ) ->
-                        Decision chapter story
+                        Decision story
 
-                    _ ->
-                        Page (source 1 chapter story) chapter story
+                    ( _, _ ) ->
+                        Page 1 story
 
-            ( NextPage, Page ( no, _ ) chapter story ) ->
-                Page (source (no + 1) chapter story) chapter story
+            ( NextPage, Page no story ) ->
+                case ( List.length story.current.next, no == story.current.length ) of
+                    ( 0, True ) ->
+                        End story
 
-            ( PreviousPage, Page ( no, _ ) chapter story ) ->
-                case no of
-                    1 ->
-                        Title chapter story
+                    ( _, True ) ->
+                        Decision story
 
-                    _ ->
-                        Page (source (no - 1) chapter story) chapter story
+                    ( _, _ ) ->
+                        Page (no + 1) story
 
-            ( PreviousPage, Decision chapter story ) ->
-                case chapter.length of
-                    0 ->
-                        Title chapter story
-
-                    _ ->
-                        Page (source chapter.length chapter story) chapter story
-
-            _ ->
+            ( _, _ ) ->
                 model
-
-
-source : Int -> Chapter a -> Story a -> ( Int, String )
-source no chapter story =
-    ( no
-    , story.rootUrl
-        ++ "/"
-        ++ Http.uriEncode chapter.title
-        ++ "/"
-        ++ String.padLeft 3 '0' (toString no)
-        ++ "."
-        ++ story.imageFormat
-    )
 
 
 view : Model a -> Html (Msg a)
 view model =
     case model of
-        _ ->
-            Debug.crash "view"
+        Title story ->
+            View.title story.name story.current.title NextPage
+
+        Page no story ->
+            View.page
+                (source no story)
+                { previous = PreviousPage, next = NextPage }
+
+        Decision story ->
+            View.decision (options story) PreviousPage
+
+        End story ->
+            View.end story.name PreviousPage
 
 
+source : Int -> Story a -> String
+source no story =
+    story.rootUrl
+        ++ "/"
+        ++ Http.uriEncode story.current.title
+        ++ "/"
+        ++ String.padLeft 3 '0' (toString no)
+        ++ "."
+        ++ story.imageFormat
 
--- Page (_, src) chapter (Story name, _, _, _) ->
---     View.page src name
--- Decision chapter (Story { name, _, _, _ }) ->
---     View.decision
--- End story ->
---     View.end story
+
+options : Story a -> List ( String, String, View.Distance, Msg a )
+options story =
+    let
+        option next =
+            ( next.place
+            , next.description
+            , View.Here
+            , Choose next.content
+            )
+    in
+        List.map option story.current.next
 
 
 subscriptions : Model a -> Sub (Msg a)
