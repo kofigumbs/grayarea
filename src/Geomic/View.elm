@@ -6,18 +6,10 @@ import Html.Events as Html
 import Http
 
 
-type Distance
-    = Here
-    | Nearby
-    | Far
-
-
 type alias Option msg =
     { place : String
     , description : String
-    , latitude : Float
-    , longitude : Float
-    , distance : Distance
+    , nearby : Bool
     , msg : msg
     }
 
@@ -25,7 +17,7 @@ type alias Option msg =
 title : String -> String -> msg -> Html msg
 title name title msg =
     flex
-        [ card
+        [ card primary
             [ Html.h1 [] [ Html.text name ]
             , Html.h2 [] [ Html.text title ]
             ]
@@ -49,55 +41,57 @@ page url msgs =
         ]
 
 
-decision : List ( String, String, Distance, msg ) -> msg -> Html msg
+decision : List (Option msg) -> msg -> Html msg
 decision options msg =
     let
-        text distance =
-            case distance of
-                Here ->
-                    next
-
-                Nearby ->
-                    "this option is nearby"
-
-                Far ->
-                    "this option is too far away"
+        theme nearby =
+            if nearby then
+                ( next, primary )
+            else
+                ( unavailable, secondary )
     in
         flex <|
             (::) (button previous msg) <|
                 flip List.map options <|
-                    \( place, description, distance, msg ) ->
-                        card
-                            [ Html.h3 [] [ Html.text place ]
-                            , Html.h4 [] [ Html.text description ]
-                            , Html.button
-                                [ Html.onClick msg
-                                , Html.disabled (distance /= Here)
-                                , Html.style
-                                    [ ( "width", "100%" )
-                                    , ( "height", "3rem" )
-                                    , ( "border", "none" )
-                                    , ( "shadow", "none" )
-                                    , ( "cursor", "pointer" )
-                                    , ( "background-color", primary )
-                                    , ( "color", "white" )
-                                    , ( "font-size", "1rem" )
-                                    , ( "position", "absolute" )
-                                    , ( "bottom", "0" )
-                                    , ( "left", "0" )
-                                    , ( "font-family", "monspace" )
-                                    , ( "text-transform", "uppercase" )
+                    \{ place, description, nearby, msg } ->
+                        let
+                            ( text, color ) =
+                                theme nearby
+                        in
+                            card color
+                                [ Html.h3 [] [ Html.text place ]
+                                , Html.h4 [] [ Html.text description ]
+                                , Html.button
+                                    [ Html.onClick msg
+                                    , Html.disabled (not nearby)
+                                    , Html.style
+                                        [ ( "width", "100%" )
+                                        , ( "height", "3rem" )
+                                        , ( "border", "none" )
+                                        , ( "shadow", "none" )
+                                        , ( "cursor", "pointer" )
+                                        , ( "background-color", color )
+                                        , ( "color", "white" )
+                                        , ( "font-size", "1rem" )
+                                        , ( "position", "absolute" )
+                                        , ( "bottom", "0" )
+                                        , ( "left", "0" )
+                                        , ( "font-family", "monspace" )
+                                        , ( "text-transform", "uppercase" )
+                                        ]
                                     ]
+                                    [ Html.text text ]
                                 ]
-                                [ Html.text (text distance) ]
-                            ]
 
 
 end : String -> msg -> Html msg
 end name msg =
     flex
         [ button previous msg
-        , Html.h1 [] [ Html.text name ]
+        , card primary
+            [ Html.h1 [] [ Html.text name ]
+            , Html.h2 [] [ Html.text "THE END." ]
+            ]
         ]
 
 
@@ -114,8 +108,8 @@ flex =
         ]
 
 
-card : List (Html msg) -> Html msg
-card =
+card : String -> List (Html msg) -> Html msg
+card color =
     Html.div
         [ Html.style
             [ ( "text-align", "center" )
@@ -124,7 +118,7 @@ card =
             , ( "height", "16rem" )
             , ( "padding", "5rem 2.5rem" )
             , ( "margin", "1.5rem" )
-            , ( "border", "0.1rem solid " ++ primary )
+            , ( "border", "0.1rem solid " ++ color )
             , ( "border-radius", "0.2rem" )
             , ( "overflow", "hidden" )
             ]
@@ -141,9 +135,19 @@ next =
     "▶️"
 
 
+unavailable : String
+unavailable =
+    "✖️"
+
+
 primary : String
 primary =
     "#34495E"
+
+
+secondary : String
+secondary =
+    "#333333"
 
 
 button : String -> msg -> Html msg

@@ -27,6 +27,7 @@ program { name, rootUrl, imageFormat, table, start } =
                 , imageFormat = imageFormat
                 , current = table start
                 , table = table
+                , position = Nothing
                 }
         , update = Story.update
         , view = Story.view

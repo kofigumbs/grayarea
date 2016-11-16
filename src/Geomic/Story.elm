@@ -84,28 +84,42 @@ view model =
             View.end story.name PreviousPage
 
 
-source : Int -> Story a -> String
-source no story =
-    story.rootUrl
-        ++ "/"
-        ++ Http.uriEncode story.current.title
-        ++ "/"
-        ++ String.padLeft 3 '0' (toString no)
-        ++ "."
-        ++ story.imageFormat
+threshold : Float
+threshold =
+    0.0005
 
 
-options : Story a -> List ( String, String, View.Distance, Msg a )
+options : Story a -> List (View.Option (Msg a))
 options story =
     let
+        isNearby next ( latitude, longitude ) =
+            (&&)
+                (abs (next.latitude - latitude) <= threshold)
+                (abs (next.longitude - longitude) <= threshold)
+
         option next =
-            ( next.place
-            , next.description
-            , View.Here
-            , Choose next.content
-            )
+            { place = next.place
+            , description = next.description
+            , nearby =
+                Maybe.map (isNearby next) story.position
+                    |> Maybe.withDefault False
+            , msg =
+                Choose next.content
+            }
     in
         List.map option story.current.next
+
+
+source : Int -> Story a -> String
+source no story =
+    let
+        dir =
+            Http.uriEncode story.current.title
+
+        file =
+            String.padLeft 3 '0' (toString no)
+    in
+        story.rootUrl ++ "/" ++ dir ++ "/" ++ file ++ "." ++ story.imageFormat
 
 
 subscriptions : Model a -> Sub (Msg a)

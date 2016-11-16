@@ -21,6 +21,7 @@ type alias Story content =
     , imageFormat : String
     , current : Chapter content
     , table : content -> Chapter content
+    , position : Maybe ( Float, Float )
     }
 
 
