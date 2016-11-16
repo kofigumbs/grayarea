@@ -8,11 +8,15 @@ type Msg content
     | Moved Float Float
 
 
-type Model content
-    = Title (Story content)
-    | Page Int (Story content)
-    | Decision (Story content)
-    | End (Story content)
+type alias Model content =
+    ( Bookmark, Story content )
+
+
+type Bookmark
+    = Title
+    | Page Int
+    | Decision
+    | End
 
 
 type alias Story content =

@@ -95,13 +95,13 @@ all =
                 \() ->
                     let
                         model =
-                            Title (story chapterOne)
+                            ( Title, story chapterOne )
 
                         updated =
                             Story.update NextPage model
                     in
                         case fst updated of
-                            Page no updatedStory ->
+                            ( Page no, updatedStory ) ->
                                 Expect.equal
                                     ( 1, chapterOne )
                                     ( no, updatedStory.current )
@@ -114,13 +114,13 @@ all =
                 \() ->
                     let
                         model =
-                            Page 1 (story chapterOne)
+                            ( Page 1, story chapterOne )
 
                         updated =
                             Story.update PreviousPage model
                     in
                         case fst updated of
-                            Title updatedStory ->
+                            ( Title, updatedStory ) ->
                                 Expect.equal chapterOne updatedStory.current
 
                             _ ->
@@ -131,13 +131,13 @@ all =
                 \() ->
                     let
                         model =
-                            Title (story chapterTwo)
+                            ( Title, story chapterTwo )
 
                         updated =
                             Story.update NextPage model
                     in
                         case fst updated of
-                            End updatedStory ->
+                            ( End, updatedStory ) ->
                                 Expect.equal chapterTwo updatedStory.current
 
                             _ ->
@@ -148,13 +148,13 @@ all =
                 \() ->
                     let
                         model =
-                            Title (story chapterThree)
+                            ( Title, story chapterThree )
 
                         updated =
                             Story.update NextPage model
                     in
                         case fst updated of
-                            Decision updatedStory ->
+                            ( Decision, updatedStory ) ->
                                 Expect.equal chapterThree updatedStory.current
 
                             _ ->
@@ -165,13 +165,13 @@ all =
                 \() ->
                     let
                         model =
-                            Page 2 (story chapterTwo)
+                            ( Page 2, story chapterTwo )
 
                         updated =
                             Story.update PreviousPage model
                     in
                         case fst updated of
-                            Page no updatedStory ->
+                            ( Page no, updatedStory ) ->
                                 Expect.equal
                                     ( 1, chapterTwo )
                                     ( no, updatedStory.current )
@@ -184,13 +184,13 @@ all =
                 \() ->
                     let
                         model =
-                            Page 1 (story chapterFour)
+                            ( Page 1, story chapterFour )
 
                         updated =
                             Story.update NextPage model
                     in
                         case fst updated of
-                            Page no updatedStory ->
+                            ( Page no, updatedStory ) ->
                                 Expect.equal
                                     ( 2, chapterFour )
                                     ( no, updatedStory.current )
@@ -203,13 +203,13 @@ all =
                 \() ->
                     let
                         model =
-                            Decision (story chapterOne)
+                            ( Decision, story chapterOne )
 
                         updated =
                             Story.update PreviousPage model
                     in
                         case fst updated of
-                            Page no updatedStory ->
+                            ( Page no, updatedStory ) ->
                                 Expect.equal
                                     ( 1, chapterOne )
                                     ( no, updatedStory.current )
@@ -222,13 +222,13 @@ all =
                 \() ->
                     let
                         model =
-                            Decision (story chapterTwo)
+                            ( Decision, story chapterTwo )
 
                         updated =
                             Story.update PreviousPage model
                     in
                         case fst updated of
-                            Title updatedStory ->
+                            ( Title, updatedStory ) ->
                                 Expect.equal chapterTwo updatedStory.current
 
                             _ ->
@@ -239,13 +239,13 @@ all =
                 \() ->
                     let
                         model =
-                            Page 1 (story chapterOne)
+                            ( Page 1, story chapterOne )
 
                         updated =
                             Story.update NextPage model
                     in
                         case fst updated of
-                            Decision updatedStory ->
+                            ( Decision, updatedStory ) ->
                                 Expect.equal chapterOne updatedStory.current
 
                             _ ->
@@ -256,13 +256,13 @@ all =
                 \() ->
                     let
                         model =
-                            Page 3 (story chapterFour)
+                            ( Page 3, story chapterFour )
 
                         updated =
                             Story.update NextPage model
                     in
                         case fst updated of
-                            End updatedStory ->
+                            ( End, updatedStory ) ->
                                 Expect.equal chapterFour updatedStory.current
 
                             _ ->
@@ -273,13 +273,13 @@ all =
                 \() ->
                     let
                         model =
-                            End (story chapterTwo)
+                            ( End, story chapterTwo )
 
                         updated =
                             Story.update PreviousPage model
                     in
                         case fst updated of
-                            Title updatedStory ->
+                            ( Title, updatedStory ) ->
                                 Expect.equal chapterTwo updatedStory.current
 
                             _ ->
@@ -290,17 +290,110 @@ all =
                 \() ->
                     let
                         model =
-                            End (story chapterFour)
+                            ( End, story chapterFour )
 
                         updated =
                             Story.update PreviousPage model
                     in
                         case fst updated of
-                            Page no updatedStory ->
+                            ( Page no, updatedStory ) ->
                                 Expect.equal ( 3, chapterFour ) ( no, updatedStory.current )
 
                             _ ->
                                 Expect.fail "should have matched Page"
+            , test
+                "Choose -> Decision -> Title"
+              <|
+                \() ->
+                    let
+                        model =
+                            ( Decision, story chapterOne )
+
+                        updated =
+                            Story.update (Choose Two) model
+                    in
+                        case fst updated of
+                            ( Title, updatedStory ) ->
+                                Expect.equal chapterTwo updatedStory.current
+
+                            _ ->
+                                Expect.fail "should have matched Title"
+            , fuzz2
+                Fuzz.float
+                Fuzz.float
+                "Moved -> Title -> Title"
+              <|
+                \a b ->
+                    let
+                        model =
+                            ( Title, story chapterOne )
+
+                        updated =
+                            Story.update (Moved a b) model
+                    in
+                        case fst updated of
+                            ( Title, updatedStory ) ->
+                                Expect.equal (Just ( a, b )) updatedStory.position
+
+                            _ ->
+                                Expect.fail "should have matched Title"
+            , fuzz2
+                Fuzz.float
+                Fuzz.float
+                "Moved -> Page -> Page"
+              <|
+                \a b ->
+                    let
+                        model =
+                            ( Page 1, story chapterOne )
+
+                        updated =
+                            Story.update (Moved a b) model
+                    in
+                        case fst updated of
+                            ( Page 1, updatedStory ) ->
+                                Expect.equal (Just ( a, b )) updatedStory.position
+
+                            _ ->
+                                Expect.fail "should have matched Page"
+            , fuzz2
+                Fuzz.float
+                Fuzz.float
+                "Moved -> Decision -> Decision"
+              <|
+                \a b ->
+                    let
+                        model =
+                            ( Decision, story chapterOne )
+
+                        updated =
+                            Story.update (Moved a b) model
+                    in
+                        case fst updated of
+                            ( Decision, updatedStory ) ->
+                                Expect.equal (Just ( a, b )) updatedStory.position
+
+                            _ ->
+                                Expect.fail "should have matched Decision"
+            , fuzz2
+                Fuzz.float
+                Fuzz.float
+                "Moved -> End -> End"
+              <|
+                \a b ->
+                    let
+                        model =
+                            ( End, story chapterOne )
+
+                        updated =
+                            Story.update (Moved a b) model
+                    in
+                        case fst updated of
+                            ( End, updatedStory ) ->
+                                Expect.equal (Just ( a, b )) updatedStory.position
+
+                            _ ->
+                                Expect.fail "should have matched End"
             ]
         , describe "source"
             [ test "converts 1 on chapterOne" <|

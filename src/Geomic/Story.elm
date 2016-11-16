@@ -1,6 +1,7 @@
 module Geomic.Story exposing (..)
 
 import String
+import Geolocation
 import Html exposing (Html)
 import Http
 import Domain exposing (..)
@@ -9,78 +10,82 @@ import Geomic.View as View
 
 init : Story a -> ( Model a, Cmd (Msg a) )
 init story =
-    ( Title story, Cmd.none )
+    ( ( Title, story ), Cmd.none )
 
 
 update : Msg a -> Model a -> ( Model a, Cmd (Msg a) )
-update msg model =
+update msg ( bookmark, story ) =
     flip (,) Cmd.none <|
-        case ( msg, model ) of
-            ( PreviousPage, Page no story ) ->
-                case no of
-                    1 ->
-                        Title story
-
-                    _ ->
-                        Page (no - 1) story
-
-            ( PreviousPage, Decision story ) ->
-                case story.current.length of
-                    0 ->
-                        Title story
-
-                    _ ->
-                        Page story.current.length story
-
-            ( PreviousPage, End story ) ->
-                case story.current.length of
-                    0 ->
-                        Title story
-
-                    _ ->
-                        Page story.current.length story
-
-            ( NextPage, Title story ) ->
+        case ( msg, bookmark ) of
+            ( NextPage, Title ) ->
                 case ( List.length story.current.next, story.current.length ) of
                     ( 0, 0 ) ->
-                        End story
+                        ( End, story )
 
                     ( _, 0 ) ->
-                        Decision story
+                        ( Decision, story )
 
                     ( _, _ ) ->
-                        Page 1 story
+                        ( Page 1, story )
 
-            ( NextPage, Page no story ) ->
+            ( NextPage, Page no ) ->
                 case ( List.length story.current.next, no == story.current.length ) of
                     ( 0, True ) ->
-                        End story
+                        ( End, story )
 
                     ( _, True ) ->
-                        Decision story
+                        ( Decision, story )
 
                     ( _, _ ) ->
-                        Page (no + 1) story
+                        ( Page (no + 1), story )
+
+            ( PreviousPage, Decision ) ->
+                case story.current.length of
+                    0 ->
+                        ( Title, story )
+
+                    _ ->
+                        ( Page story.current.length, story )
+
+            ( PreviousPage, End ) ->
+                case story.current.length of
+                    0 ->
+                        ( Title, story )
+
+                    _ ->
+                        ( Page story.current.length, story )
+
+            ( PreviousPage, Page 1 ) ->
+                ( Title, story )
+
+            ( PreviousPage, Page no ) ->
+                ( Page (no - 1), story )
+
+            ( Choose content, Decision ) ->
+                ( Title, { story | current = story.table content } )
+
+            ( Moved latitude longitude, _ ) ->
+                ( bookmark, { story | position = Just ( latitude, longitude ) } )
 
             ( _, _ ) ->
-                model
+                ( bookmark, story )
 
 
 view : Model a -> Html (Msg a)
-view model =
-    case model of
-        Title story ->
+view ( bookmark, story ) =
+    case bookmark of
+        Title ->
             View.title story.name story.current.title NextPage
 
-        Page no story ->
+        Page no ->
             View.page
                 (source no story)
                 { previous = PreviousPage, next = NextPage }
 
-        Decision story ->
+        Decision ->
             View.decision (options story) PreviousPage
 
-        End story ->
+        End ->
             View.end story.name PreviousPage
 
 
@@ -123,5 +128,6 @@ source no story =
 
 
 subscriptions : Model a -> Sub (Msg a)
-subscriptions model =
-    Sub.none
+subscriptions _ =
+    Geolocation.changes <|
+        \location -> Moved location.latitude location.longitude

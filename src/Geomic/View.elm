@@ -1,5 +1,6 @@
 module Geomic.View exposing (..)
 
+import Geolocation
 import Html exposing (Html)
 import Html.Attributes as Html
 import Html.Events as Html
@@ -43,44 +44,44 @@ page url msgs =
 
 decision : List (Option msg) -> msg -> Html msg
 decision options msg =
-    let
-        theme nearby =
-            if nearby then
-                ( next, primary )
-            else
-                ( unavailable, secondary )
-    in
-        flex <|
-            (::) (button previous msg) <|
-                flip List.map options <|
-                    \{ place, description, nearby, msg } ->
-                        let
-                            ( text, color ) =
-                                theme nearby
-                        in
+    flex <|
+        (::) (button previous msg) <|
+            flip List.map options <|
+                \{ place, description, nearby, msg } ->
+                    let
+                        option color text attrs =
                             card color
                                 [ Html.h3 [] [ Html.text place ]
                                 , Html.h4 [] [ Html.text description ]
-                                , Html.button
-                                    [ Html.onClick msg
-                                    , Html.disabled (not nearby)
-                                    , Html.style
-                                        [ ( "width", "100%" )
-                                        , ( "height", "3rem" )
-                                        , ( "border", "none" )
-                                        , ( "shadow", "none" )
-                                        , ( "cursor", "pointer" )
-                                        , ( "background-color", color )
-                                        , ( "color", "white" )
-                                        , ( "font-size", "1rem" )
-                                        , ( "position", "absolute" )
-                                        , ( "bottom", "0" )
-                                        , ( "left", "0" )
-                                        , ( "font-family", "monspace" )
-                                        , ( "text-transform", "uppercase" )
-                                        ]
-                                    ]
-                                    [ Html.text text ]
+                                , flip Html.button [ Html.text text ] <|
+                                    flip (::) attrs <|
+                                        Html.style
+                                            [ ( "width", "100%" )
+                                            , ( "height", "3rem" )
+                                            , ( "border", "none" )
+                                            , ( "shadow", "none" )
+                                            , ( "color", "white" )
+                                            , ( "font-size", "1rem" )
+                                            , ( "position", "absolute" )
+                                            , ( "bottom", "0" )
+                                            , ( "left", "0" )
+                                            , ( "background-color", color )
+                                            ]
+                                ]
+                    in
+                        if nearby then
+                            option
+                                primary
+                                next
+                                [ Html.onClick msg
+                                , Html.style [ ( "cursor", "pointer" ) ]
+                                ]
+                        else
+                            option
+                                secondary
+                                unavailable
+                                [ Html.disabled True
+                                , Html.title "You are too far from this option."
                                 ]
 
 
