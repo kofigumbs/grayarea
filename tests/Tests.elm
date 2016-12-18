@@ -4,8 +4,8 @@ import Expect
 import Fuzz
 import Test exposing (..)
 import Domain exposing (..)
-import Geomic.Story as Story
-import Geomic.View as View
+import Engine.Story as Story
+import Engine.View as View
 
 
 type Content

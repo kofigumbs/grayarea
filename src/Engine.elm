@@ -1,9 +1,9 @@
-module Geomic exposing (Chapter, program)
+module Engine exposing (Chapter, program)
 
 import Html exposing (Html)
 import Html.App
 import Domain exposing (..)
-import Geomic.Story as Story
+import Engine.Story as Story
 
 
 type alias Chapter content =

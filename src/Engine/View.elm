@@ -1,4 +1,4 @@
-module Geomic.View exposing (..)
+module Engine.View exposing (..)
 
 import Geolocation
 import Html exposing (Html)

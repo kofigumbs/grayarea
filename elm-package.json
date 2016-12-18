@@ -1,7 +1,7 @@
 {
     "version": "0.1.0",
-    "summary": "Framework for creating location-based choose-your-own-adventure comics",
-    "repository": "https://github.com/hkgumbs/geomic.git",
+    "summary": "An interactive, interspatial story",
+    "repository": "https://github.com/hkgumbs/elm-grayarea.git",
     "license": "BSD3",
     "source-directories": [
         "src"

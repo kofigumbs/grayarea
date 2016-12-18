@@ -1,6 +1,6 @@
 module Main exposing (..)
 
-import Geomic
+import Engine
 
 
 type Content
@@ -22,7 +22,7 @@ type Content
     | Fifteen
 
 
-table : Content -> Geomic.Chapter Content
+table : Content -> Engine.Chapter Content
 table content =
     case content of
         Zero ->
@@ -222,9 +222,9 @@ table content =
 
 main : Program Never
 main =
-    Geomic.program
+    Engine.program
         { name = "Gray Area"
-        , rootUrl = "https://kofi.sexy/grayarea"
+        , rootUrl = "/grayarea"
         , imageFormat = "png"
         , table = table
         , start = Zero

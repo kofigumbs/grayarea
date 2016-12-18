@@ -1,11 +1,11 @@
-module Geomic.Story exposing (..)
+module Engine.Story exposing (..)
 
 import String
 import Geolocation
 import Html exposing (Html)
 import Http
 import Domain exposing (..)
-import Geomic.View as View
+import Engine.View as View
 
 
 init : Story a -> ( Model a, Cmd (Msg a) )
