@@ -57,7 +57,7 @@ all =
                             Story.Choose Two
 
                         model =
-                            story One |> Story.update table msg |> fst
+                            story One |> Story.update table msg |> Tuple.first
                     in
                         Expect.equal (story Two) model
             , fuzz2
@@ -71,7 +71,7 @@ all =
                             Story.Moved a b
 
                         model =
-                            story One |> Story.update table msg |> fst
+                            story One |> Story.update table msg |> Tuple.first
                     in
                         Just ( a, b )
                             |> Expect.equal model.position
@@ -125,7 +125,7 @@ all =
                 \a b ->
                     story One
                         |> Story.update table (Story.Moved a b)
-                        |> fst
+                        |> Tuple.first
                         |> Story.present
                         |> .decisions
                         |> Expect.equal

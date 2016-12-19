@@ -2,7 +2,7 @@ module Main exposing (..)
 
 import Story
 import View
-import Html.App
+import Html
 
 
 type Content
@@ -232,9 +232,8 @@ story =
     }
 
 
-main : Program Never
 main =
-    Html.App.program
+    Html.program
         { init = ( story, Cmd.none )
         , update = Story.update table
         , view = Story.present >> View.view

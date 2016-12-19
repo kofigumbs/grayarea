@@ -6,6 +6,7 @@ module Story
         , update
         , present
         , threshold
+        , subscriptions
         )
 
 import String
@@ -75,7 +76,7 @@ panelUrls : Model a -> List String
 panelUrls model =
     let
         dir =
-            Http.uriEncode model.current.title
+            Http.encodeUri model.current.title
 
         file num =
             String.padLeft 3 '0' (toString num)
@@ -83,7 +84,7 @@ panelUrls model =
         url num =
             model.rootUrl ++ "/" ++ dir ++ "/" ++ file num ++ "." ++ model.imageFormat
     in
-        List.map url [1..model.current.length]
+        List.map url (List.range 1 model.current.length)
 
 
 decisions :
@@ -108,7 +109,7 @@ decisions model =
             , action =
                 model.position
                     |> Maybe.map (isNearby next)
-                    |> flip Maybe.andThen (action next.content)
+                    |> Maybe.andThen (action next.content)
             }
     in
         List.map decision model.current.next
