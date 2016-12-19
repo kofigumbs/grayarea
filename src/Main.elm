@@ -1,6 +1,8 @@
 module Main exposing (..)
 
-import Engine
+import Story
+import View
+import Html.App
 
 
 type Content
@@ -22,7 +24,7 @@ type Content
     | Fifteen
 
 
-table : Content -> Engine.Chapter Content
+table : Content -> Story.Chapter Content
 table content =
     case content of
         Zero ->
@@ -220,12 +222,21 @@ table content =
             }
 
 
+story : Story.Model Content
+story =
+    { name = "Gray Area"
+    , rootUrl = "/grayarea"
+    , imageFormat = "png"
+    , current = table Zero
+    , position = Nothing
+    }
+
+
 main : Program Never
 main =
-    Engine.program
-        { name = "Gray Area"
-        , rootUrl = "/grayarea"
-        , imageFormat = "png"
-        , table = table
-        , start = Zero
+    Html.App.program
+        { init = ( story, Cmd.none )
+        , update = Story.update table
+        , view = Story.present >> View.view
+        , subscriptions = Story.subscriptions
         }
