@@ -225,7 +225,7 @@ table content =
 story : Story.Model Content
 story =
     { name = "Gray Area"
-    , rootUrl = "/grayarea"
+    , rootUrl = "https://kofi.sexy/grayarea"
     , imageFormat = "png"
     , current = table Zero
     , position = Nothing
