@@ -57,21 +57,21 @@ all =
                             Story.Choose Two
 
                         model =
-                            story One |> Story.update table msg |> Tuple.first
+                            story One |> Story.update table msg
                     in
                         Expect.equal (story Two) model
             , fuzz2
                 Fuzz.float
                 Fuzz.float
-                "Moved Msg updates model position"
+                "Move Msg updates model position"
               <|
                 \a b ->
                     let
                         msg =
-                            Story.Moved a b
+                            Story.Move a b
 
                         model =
-                            story One |> Story.update table msg |> Tuple.first
+                            story One |> Story.update table msg
                     in
                         Just ( a, b )
                             |> Expect.equal model.position
@@ -124,8 +124,7 @@ all =
               <|
                 \a b ->
                     story One
-                        |> Story.update table (Story.Moved a b)
-                        |> Tuple.first
+                        |> Story.update table (Story.Move a b)
                         |> Story.present
                         |> .decisions
                         |> Expect.equal

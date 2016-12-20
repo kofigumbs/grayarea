@@ -1,4 +1,4 @@
-module Main exposing (..)
+port module Main exposing (..)
 
 import Story
 import View
@@ -6,7 +6,7 @@ import Html
 
 
 type Content
-    = Zero
+    = Prelude
     | One
     | Two
     | Three
@@ -27,8 +27,8 @@ type Content
 table : Content -> Story.Chapter Content
 table content =
     case content of
-        Zero ->
-            { title = "000"
+        Prelude ->
+            { title = "Prelude"
             , length = 19
             , next =
                 [ { place = "Stamp Student Union"
@@ -227,15 +227,29 @@ story =
     { name = "Gray Area"
     , rootUrl = "https://kofi.sexy/grayarea"
     , imageFormat = "png"
-    , current = table Zero
+    , current = table Prelude
     , position = Nothing
     }
 
 
+port scroll : () -> Cmd a
+
+
 main =
-    Html.program
-        { init = ( story, Cmd.none )
-        , update = Story.update table
-        , view = Story.present >> View.view
-        , subscriptions = Story.subscriptions
-        }
+    let
+        wrap update msg model =
+            ( update msg model
+            , case msg of
+                Story.Choose _ ->
+                    scroll ()
+
+                Story.Move _ _ ->
+                    Cmd.none
+            )
+    in
+        Html.program
+            { init = ( story, Cmd.none )
+            , update = Story.update table |> wrap
+            , view = Story.present >> View.view
+            , subscriptions = Story.subscriptions
+            }

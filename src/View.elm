@@ -34,13 +34,8 @@ view { name, chapterTitle, panelUrls, decisions } =
 panel : String -> Html a
 panel url =
     Html.img
-        [ Html.src url
-        , Html.style
-            [ ( "width", "100%" )
-            , ( "margin", "0 auto" )
-            , ( "display", "block" )
-            , ( "max-width", maxWidth )
-            ]
+        [ centerStrip
+        , Html.src url
         ]
         []
 
@@ -48,12 +43,12 @@ panel url =
 header : String -> String -> Html a
 header name chapterTitle =
     Html.div
-        [ Html.style
+        [ centerStrip
+        , Html.style
             [ ( "text-align", "left" )
             , ( "background-color", "#333333" )
-            , ( "margin", "0 auto" )
-            , ( "max-width", maxWidth )
             ]
+        , Html.id "header"
         ]
         [ Html.div
             [ Html.style
@@ -76,14 +71,12 @@ footer =
                 Just msg ->
                     Html.a
                         [ monospace
+                        , centerStrip
                         , Html.style
                             [ ( "background-color", "#009688" )
                             , ( "text-decoration", "underline" )
                             , ( "cursor", "pointer" )
-                            , ( "margin", "0 auto" )
                             , ( "padding", "1em 0" )
-                            , ( "display", "block" )
-                            , ( "max-width", maxWidth )
                             ]
                         , Html.onClick msg
                         ]
@@ -91,14 +84,19 @@ footer =
                 Nothing ->
                     Html.div
                         [ monospace
+                        , centerStrip
                         , Html.style
                             [ ( "background-color", "#B71C1C" )
-                            , ( "margin", "0 auto" )
                             , ( "padding", "1em 0" )
-                            , ( "max-width", maxWidth )
                             ]
                         ]
-                        << flip (++) [ Html.text "You are too far away!" ]
+                        << flip (++)
+                            [ Html.p
+                                [ Html.style [ ( "font-style", "italic" ) ]
+                                ]
+                                [ Html.text "You are too far away!"
+                                ]
+                            ]
 
         option { place, description, action } =
             wrap action
@@ -109,14 +107,19 @@ footer =
         List.map option
 
 
+centerStrip : Html.Attribute a
+centerStrip =
+    Html.style
+        [ ( "margin", "0 auto" )
+        , ( "display", "block" )
+        , ( "width", "100%" )
+        , ( "max-width", "720px" )
+        ]
+
+
 monospace : Html.Attribute a
 monospace =
     Html.style
         [ ( "font-family", "monospace" )
         , ( "color", "#FFFFFF" )
         ]
-
-
-maxWidth : String
-maxWidth =
-    "720px"

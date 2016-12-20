@@ -12,11 +12,12 @@ module Story
 import String
 import Geolocation
 import Http
+import Task
 
 
 type Msg content
     = Choose content
-    | Moved Float Float
+    | Move Float Float
 
 
 type alias Model content =
@@ -42,14 +43,14 @@ type alias Chapter content =
     }
 
 
-update : (a -> Chapter a) -> Msg a -> Model a -> ( Model a, Cmd (Msg a) )
+update : (a -> Chapter a) -> Msg a -> Model a -> Model a
 update table msg model =
     case msg of
         Choose content ->
-            { model | current = table content } ! []
+            { model | current = table content }
 
-        Moved latitude longitude ->
-            { model | position = Just ( latitude, longitude ) } ! []
+        Move latitude longitude ->
+            { model | position = Just ( latitude, longitude ) }
 
 
 present :
@@ -123,4 +124,4 @@ threshold =
 subscriptions : a -> Sub (Msg b)
 subscriptions _ =
     Geolocation.changes <|
-        \location -> Moved location.latitude location.longitude
+        \location -> Move location.latitude location.longitude
