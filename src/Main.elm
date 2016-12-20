@@ -2,6 +2,7 @@ port module Main exposing (..)
 
 import Story
 import View
+import Geolocation
 import Html
 
 
@@ -222,17 +223,28 @@ table content =
             }
 
 
-story : Story.Model Content
-story =
+init : Bool -> ( Story.Model Content, Cmd (Story.Msg Content) )
+init cheat =
     { name = "Gray Area"
     , rootUrl = "https://kofi.sexy/grayarea"
     , imageFormat = "png"
     , current = table Prelude
     , position = Nothing
+    , cheat = cheat
     }
+        ! []
 
 
 port scroll : () -> Cmd a
+
+
+subscriptions : Story.Model content -> Sub (Story.Msg content)
+subscriptions model =
+    if model.cheat then
+        Geolocation.changes <|
+            \location -> Story.Move location.latitude location.longitude
+    else
+        Sub.none
 
 
 main =
@@ -247,9 +259,9 @@ main =
                     Cmd.none
             )
     in
-        Html.program
-            { init = ( story, Cmd.none )
+        Html.programWithFlags
+            { init = init
             , update = Story.update table |> wrap
             , view = Story.present >> View.view
-            , subscriptions = Story.subscriptions
+            , subscriptions = subscriptions
             }

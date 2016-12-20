@@ -18,6 +18,7 @@ story chapter =
     , imageFormat = "png"
     , current = table chapter
     , position = Nothing
+    , cheat = False
     }
 
 
@@ -116,6 +117,23 @@ all =
                             , "google.com/Single%20Ladies/003.png"
                             , "google.com/Single%20Ladies/004.png"
                             , "google.com/Single%20Ladies/005.png"
+                            ]
+            , fuzz2
+                (Fuzz.floatRange 0.001 0.005)
+                (Fuzz.floatRange 0.001 0.005)
+                "When cheat is enabled, everything is nearby"
+              <|
+                \a b ->
+                    story One
+                        |> (\s -> { s | cheat = True })
+                        |> Story.update table (Story.Move a b)
+                        |> Story.present
+                        |> .decisions
+                        |> Expect.equal
+                            [ { place = "Chicago"
+                              , description = "windy city"
+                              , action = Just (Story.Choose Two)
+                              }
                             ]
             , fuzz2
                 (Fuzz.floatRange 0.001 0.005)

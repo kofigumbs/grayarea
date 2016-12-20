@@ -6,11 +6,9 @@ module Story
         , update
         , present
         , threshold
-        , subscriptions
         )
 
 import String
-import Geolocation
 import Http
 import Task
 
@@ -26,6 +24,7 @@ type alias Model content =
     , imageFormat : String
     , current : Chapter content
     , position : Maybe ( Float, Float )
+    , cheat : Bool
     }
 
 
@@ -93,10 +92,11 @@ decisions :
     -> List { place : String, description : String, action : Maybe (Msg a) }
 decisions model =
     let
-        isNearby next ( latitude, longitude ) =
-            (&&)
-                (abs (next.latitude - latitude) <= threshold)
-                (abs (next.longitude - longitude) <= threshold)
+        isNearby cheat next ( latitude, longitude ) =
+            (||) cheat <|
+                (&&)
+                    (abs (next.latitude - latitude) <= threshold)
+                    (abs (next.longitude - longitude) <= threshold)
 
         action content nearby =
             if nearby then
@@ -104,24 +104,18 @@ decisions model =
             else
                 Nothing
 
-        decision next =
+        decision cheat next =
             { place = next.place
             , description = next.description
             , action =
                 model.position
-                    |> Maybe.map (isNearby next)
+                    |> Maybe.map (isNearby cheat next)
                     |> Maybe.andThen (action next.content)
             }
     in
-        List.map decision model.current.next
+        List.map (decision model.cheat) model.current.next
 
 
 threshold : Float
 threshold =
     0.0005
-
-
-subscriptions : a -> Sub (Msg b)
-subscriptions _ =
-    Geolocation.changes <|
-        \location -> Move location.latitude location.longitude
