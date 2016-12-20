@@ -1,4 +1,4 @@
-module Tests exposing (..)
+module Story.Test exposing (all)
 
 import Expect
 import Fuzz
@@ -47,7 +47,7 @@ table content =
 
 all : Test
 all =
-    describe "Geomic.Story"
+    describe "Story"
         [ describe "update"
             [ test
                 "Choose Msg moves model to that chapter"
