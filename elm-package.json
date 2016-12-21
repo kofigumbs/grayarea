@@ -1,7 +1,7 @@
 {
     "version": "0.1.0",
     "summary": "An interactive, interspatial story",
-    "repository": "https://github.com/hkgumbs/elm-grayarea.git",
+    "repository": "https://github.com/hkgumbs/grayarea.git",
     "license": "BSD3",
     "source-directories": [
         "src"
