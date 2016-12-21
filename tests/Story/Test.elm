@@ -69,12 +69,28 @@ config =
     }
 
 
+update =
+    Story.update config
+
+
+present =
+    Story.present config
+
+
 withoutCheating =
-    ""
+    Story.init config ""
 
 
 withCheating =
-    "#cheat"
+    Story.init config "#cheat"
+
+
+model =
+    Tuple.first
+
+
+cmd =
+    Tuple.second
 
 
 all : Test
@@ -85,32 +101,29 @@ all =
           <|
             \_ ->
                 withoutCheating
-                    |> Story.init config
-                    |> Tuple.first
-                    |> Story.update config Story.LocationError
-                    |> Tuple.first
-                    |> Story.present config
-                    |> Expect.equal Error
+                    |> model
+                    >> update Story.LocationError
+                    >> model
+                    >> present
+                    >> Expect.equal Error
         , test
             "presents loading after initialize without cheat"
           <|
             \_ ->
                 withoutCheating
-                    |> Story.init config
-                    |> Tuple.first
-                    |> Story.present config
-                    |> Expect.equal Loading
+                    |> model
+                    >> present
+                    >> Expect.equal Loading
         , test
             "presents simple chapter after initialize with cheat"
           <|
             \_ ->
                 withCheating
-                    |> Story.init config
-                    |> Tuple.first
-                    |> Story.update config (Story.Choose Two)
-                    |> Tuple.first
-                    |> Story.present config
-                    |> Expect.equal
+                    |> model
+                    >> update (Story.Choose Two)
+                    >> model
+                    >> present
+                    >> Expect.equal
                         (Chapter
                             { name = "Test Story"
                             , chapterTitle = "Single Ladies"
@@ -137,12 +150,11 @@ all =
           <|
             \precondition latitude longitude ->
                 precondition
-                    |> Story.init config
-                    |> Tuple.first
-                    |> Story.update config (Story.Move latitude longitude)
-                    |> Tuple.first
-                    |> Story.present config
-                    |> Expect.equal
+                    |> model
+                    >> update (Story.Move latitude longitude)
+                    >> model
+                    >> present
+                    >> Expect.equal
                         (Chapter
                             { name = "Test Story"
                             , chapterTitle = "Great Beginnings"
@@ -172,12 +184,11 @@ all =
           <|
             \latitude longitude ->
                 withoutCheating
-                    |> Story.init config
-                    |> Tuple.first
-                    |> Story.update config (Story.Move latitude longitude)
-                    |> Tuple.first
-                    |> Story.present config
-                    |> Expect.equal
+                    |> model
+                    >> update (Story.Move latitude longitude)
+                    >> model
+                    >> present
+                    >> Expect.equal
                         (Chapter
                             { name = "Test Story"
                             , chapterTitle = "Great Beginnings"
@@ -199,65 +210,58 @@ all =
           <|
             \_ ->
                 withoutCheating
-                    |> Story.init config
-                    |> Tuple.first
-                    |> Story.update config (Story.Choose Two)
-                    |> Tuple.second
-                    |> Expect.equal scroll
+                    |> model
+                    >> update (Story.Choose Two)
+                    >> cmd
+                    >> Expect.equal scroll
         , test
             "does not send geolocation task with cheat"
           <|
             \_ ->
                 withCheating
-                    |> Story.init config
-                    |> Tuple.second
-                    |> Expect.equal Cmd.none
+                    |> cmd
+                    >> Expect.equal Cmd.none
         , test
             "does not subscribe to geolocation with cheat"
           <|
             \_ ->
                 withCheating
-                    |> Story.init config
-                    |> Tuple.first
-                    |> Story.subscriptions
-                    |> Expect.equal Sub.none
+                    |> model
+                    >> Story.subscriptions
+                    >> Expect.equal Sub.none
         , test
             "sends geolocation task without cheat"
           <|
             \_ ->
                 withoutCheating
-                    |> Story.init config
-                    |> Tuple.second
-                    |> Expect.notEqual Cmd.none
+                    |> cmd
+                    >> Expect.notEqual Cmd.none
         , test
             "does not subscribe to geolocation when loading without cheat"
           <|
             \_ ->
                 withoutCheating
-                    |> Story.init config
-                    |> Tuple.first
-                    |> Story.subscriptions
-                    |> Expect.equal Sub.none
+                    |> model
+                    >> Story.subscriptions
+                    >> Expect.equal Sub.none
         , test
             "subscribes to geolocation when loading without cheat after move"
           <|
             \_ ->
                 withoutCheating
-                    |> Story.init config
-                    |> Tuple.first
-                    |> Story.update config (Story.Move 1 1)
-                    |> Tuple.first
-                    |> Story.subscriptions
-                    |> Expect.notEqual Sub.none
+                    |> model
+                    >> update (Story.Move 1 1)
+                    >> model
+                    >> Story.subscriptions
+                    >> Expect.notEqual Sub.none
         , test
             "subscribes to geolocation when loading without cheat after error"
           <|
             \_ ->
                 withoutCheating
-                    |> Story.init config
-                    |> Tuple.first
-                    |> Story.update config Story.LocationError
-                    |> Tuple.first
-                    |> Story.subscriptions
-                    |> Expect.notEqual Sub.none
+                    |> model
+                    >> update Story.LocationError
+                    >> model
+                    >> Story.subscriptions
+                    >> Expect.notEqual Sub.none
         ]
