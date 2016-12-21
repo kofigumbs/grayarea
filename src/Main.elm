@@ -29,7 +29,7 @@ table content =
     case content of
         Prelude ->
             { title = "Prelude"
-            , length = 19
+            , length = 20
             , next =
                 [ { place = "Stamp Student Union"
                   , description = "Investigate the secret project."
@@ -175,49 +175,49 @@ table content =
 
         Eight ->
             { title = "008"
-            , length = 8
+            , length = 9
             , next = []
             }
 
         Nine ->
             { title = "009"
-            , length = 6
+            , length = 7
             , next = []
             }
 
         Ten ->
             { title = "010"
-            , length = 7
+            , length = 8
             , next = []
             }
 
         Eleven ->
             { title = "011"
-            , length = 10
+            , length = 11
             , next = []
             }
 
         Twelve ->
             { title = "012"
-            , length = 11
+            , length = 12
             , next = []
             }
 
         Thirteen ->
             { title = "013"
-            , length = 7
+            , length = 8
             , next = []
             }
 
         Fourteen ->
             { title = "014"
-            , length = 15
+            , length = 16
             , next = []
             }
 
         Fifteen ->
             { title = "015"
-            , length = 4
+            , length = 5
             , next = []
             }
 
