@@ -1,11 +1,34 @@
-module View exposing (view)
+module View exposing (loading, error, chapter)
 
 import Html exposing (Html)
 import Html.Attributes as Html
 import Html.Events as Html
 
 
-view :
+palette =
+    { gray = "#333333"
+    , red = "#B71C1C"
+    , green = "#009688"
+    }
+
+
+loading : Html a
+loading =
+    header "loading..." "" palette.gray
+
+
+error : Html a
+error =
+    header
+        "I couldn't access your location"
+        """
+        Gray Area uses your location to track progress.
+        Please let me access your location to continue.
+        """
+        palette.red
+
+
+chapter :
     { name : String
     , chapterTitle : String
     , panelUrls : List String
@@ -17,16 +40,16 @@ view :
             }
     }
     -> Html a
-view { name, chapterTitle, panelUrls, decisions } =
+chapter { name, chapterTitle, panelUrls, decisions } =
     List.map panel panelUrls
-        |> (::) (header name chapterTitle)
+        |> (::) (header name chapterTitle "#333333")
         |> flip (++) (footer decisions)
         |> List.intersperse (Html.br [] [])
         |> Html.div
             [ Html.style
                 [ ( "text-align", "center" )
                 , ( "line-height", "1" )
-                , ( "margin", "1em" )
+                , ( "margin", "1em 0" )
                 ]
             ]
 
@@ -40,13 +63,13 @@ panel url =
         []
 
 
-header : String -> String -> Html a
-header name chapterTitle =
+header : String -> String -> String -> Html a
+header name chapterTitle color =
     Html.div
         [ centerStrip
         , Html.style
             [ ( "text-align", "left" )
-            , ( "background-color", "#333333" )
+            , ( "background-color", color )
             ]
         , Html.id "header"
         ]
