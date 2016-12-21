@@ -83,7 +83,7 @@ all =
         [ test
             "presents error after updated with location error"
           <|
-            \() ->
+            \_ ->
                 withoutCheating
                     |> Story.init config
                     |> Tuple.first
@@ -94,7 +94,7 @@ all =
         , test
             "presents loading after initialize without cheat"
           <|
-            \() ->
+            \_ ->
                 withoutCheating
                     |> Story.init config
                     |> Tuple.first
@@ -103,7 +103,7 @@ all =
         , test
             "presents simple chapter after initialize with cheat"
           <|
-            \() ->
+            \_ ->
                 withCheating
                     |> Story.init config
                     |> Tuple.first
@@ -197,7 +197,7 @@ all =
         , test
             "scrolls on new chapter"
           <|
-            \() ->
+            \_ ->
                 withoutCheating
                     |> Story.init config
                     |> Tuple.first
@@ -207,7 +207,7 @@ all =
         , test
             "does not send geolocation task with cheat"
           <|
-            \() ->
+            \_ ->
                 withCheating
                     |> Story.init config
                     |> Tuple.second
@@ -215,7 +215,7 @@ all =
         , test
             "does not subscribe to geolocation with cheat"
           <|
-            \() ->
+            \_ ->
                 withCheating
                     |> Story.init config
                     |> Tuple.first
@@ -224,7 +224,7 @@ all =
         , test
             "sends geolocation task without cheat"
           <|
-            \() ->
+            \_ ->
                 withoutCheating
                     |> Story.init config
                     |> Tuple.second
@@ -232,7 +232,7 @@ all =
         , test
             "does not subscribe to geolocation when loading without cheat"
           <|
-            \() ->
+            \_ ->
                 withoutCheating
                     |> Story.init config
                     |> Tuple.first
@@ -241,7 +241,7 @@ all =
         , test
             "subscribes to geolocation when loading without cheat after move"
           <|
-            \() ->
+            \_ ->
                 withoutCheating
                     |> Story.init config
                     |> Tuple.first
@@ -252,7 +252,7 @@ all =
         , test
             "subscribes to geolocation when loading without cheat after error"
           <|
-            \() ->
+            \_ ->
                 withoutCheating
                     |> Story.init config
                     |> Tuple.first
