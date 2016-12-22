@@ -17,9 +17,9 @@ import Task
 
 
 type Msg content
-    = Move Float Float
+    = Moved Float Float
     | LocationError
-    | Choose content
+    | Chosen content
     | PanelLoaded
 
 
@@ -53,7 +53,7 @@ type alias Chapter content =
 
 type Location
     = NotRequired
-    | Loading
+    | Asking
     | Error
     | Coordinates Float Float
 
@@ -71,14 +71,14 @@ init :
 init config flags =
     let
         locate =
-            Result.map (\current -> Move current.latitude current.longitude)
+            Result.map (\current -> Moved current.latitude current.longitude)
                 >> Result.withDefault LocationError
 
         ( location, cmd ) =
             if String.contains "cheat" flags then
                 ( NotRequired, Cmd.none )
             else
-                ( Loading, Task.attempt locate Geolocation.now )
+                ( Asking, Task.attempt locate Geolocation.now )
     in
         ( Model
             { name = config.name
@@ -104,12 +104,12 @@ update config msg (Model story) =
             , Cmd.none
             )
 
-        Move latitude longitude ->
+        Moved latitude longitude ->
             ( Model { story | location = Coordinates latitude longitude }
             , Cmd.none
             )
 
-        Choose content ->
+        Chosen content ->
             ( Model { story | current = config.table content, panelsLoaded = 0 }
             , config.scroll
             )
@@ -159,7 +159,7 @@ present config (Model story) =
             Error ->
                 config.error
 
-            Loading ->
+            Asking ->
                 loading
 
             Coordinates latitude longitude ->
@@ -197,7 +197,7 @@ decisions eligible story =
             , description = next.description
             , action =
                 if eligible ( next.latitude, next.longitude ) then
-                    Just (Choose next.content)
+                    Just (Chosen next.content)
                 else
                     Nothing
             }
@@ -217,8 +217,8 @@ threshold =
 
 subscriptions : Model content -> Sub (Msg content)
 subscriptions (Model story) =
-    if story.location == NotRequired || story.location == Loading then
+    if story.location == NotRequired || story.location == Asking then
         Sub.none
     else
         Geolocation.changes
-            (\current -> Move current.latitude current.longitude)
+            (\current -> Moved current.latitude current.longitude)

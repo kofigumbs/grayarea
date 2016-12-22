@@ -162,7 +162,7 @@ all =
                             , decisions =
                                 [ { place = "Chicago"
                                   , description = "windy city"
-                                  , action = Just (Story.Choose Two)
+                                  , action = Just (Story.Chosen Two)
                                   }
                                 ]
                             }
@@ -174,7 +174,7 @@ all =
                 present withCheat
                     [ Story.PanelLoaded
                     , Story.PanelLoaded
-                    , Story.Choose Two
+                    , Story.Chosen Two
                     ]
                     |> Expect.equal
                         (Loading
@@ -208,7 +208,7 @@ all =
           <|
             \cheat latitude longitude ->
                 present cheat
-                    [ Story.Move latitude longitude
+                    [ Story.Moved latitude longitude
                     , Story.PanelLoaded
                     , Story.PanelLoaded
                     , Story.PanelLoaded
@@ -226,7 +226,7 @@ all =
                             , decisions =
                                 [ { place = "Chicago"
                                   , description = "windy city"
-                                  , action = Just (Story.Choose Two)
+                                  , action = Just (Story.Chosen Two)
                                   }
                                 ]
                             }
@@ -238,7 +238,7 @@ all =
           <|
             \latitude longitude ->
                 present withoutCheat
-                    [ Story.Move latitude longitude
+                    [ Story.Moved latitude longitude
                     , Story.PanelLoaded
                     , Story.PanelLoaded
                     , Story.PanelLoaded
@@ -264,7 +264,7 @@ all =
             "scrolls on new chapter"
           <|
             \_ ->
-                do withoutCheat [ Story.Choose Two ]
+                do withoutCheat [ Story.Chosen Two ]
                     |> Tuple.second
                     |> Expect.equal scroll
         , test
@@ -301,7 +301,7 @@ all =
             "subscribes to geolocation when loading without cheat after move"
           <|
             \_ ->
-                do withoutCheat [ (Story.Move 1 1) ]
+                do withoutCheat [ (Story.Moved 1 1) ]
                     |> Tuple.first
                     |> Story.subscriptions
                     |> Expect.notEqual Sub.none
