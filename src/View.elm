@@ -6,24 +6,6 @@ import Html.Attributes as Html
 import Html.Events as Html
 
 
-palette =
-    { gray = "#333333"
-    , red = "#B71C1C"
-    , green = "#009688"
-    }
-
-
-wrap : List (Html a) -> Html a
-wrap =
-    Html.div
-        [ Html.style
-            [ ( "text-align", "center" )
-            , ( "line-height", "1" )
-            , ( "margin", "1em 0" )
-            ]
-        ]
-
-
 error : Html a
 error =
     wrap
@@ -67,26 +49,21 @@ chapter :
     }
     -> Html a
 chapter { name, chapterTitle, panelUrls, decisions } =
-    List.map panel panelUrls
-        |> (::) (header name chapterTitle "#333333")
-        >> flip (++) (footer decisions)
-        >> List.intersperse (Html.br [] [])
-        >> wrap
-
-
-panel : String -> Html a
-panel url =
-    Html.img
-        [ centerStrip
-        , Html.src url
-        ]
-        []
+    let
+        panel url =
+            Html.img [ expand, Html.src url ] []
+    in
+        List.map panel panelUrls
+            |> (::) (header name chapterTitle palette.gray)
+            >> flip (++) (footer decisions)
+            >> List.intersperse (Html.br [ expand ] [])
+            >> wrap
 
 
 header : String -> String -> String -> Html a
 header name chapterTitle color =
     Html.div
-        [ centerStrip
+        [ expand
         , Html.style
             [ ( "text-align", "left" )
             , ( "background-color", color )
@@ -97,8 +74,8 @@ header name chapterTitle color =
                 [ ( "padding", "4em" )
                 ]
             ]
-            [ Html.h1 [ monospace ] [ Html.text name ]
-            , Html.h2 [ monospace ] [ Html.text chapterTitle ]
+            [ Html.h1 [ font ] [ Html.text name ]
+            , Html.h2 [ font ] [ Html.text chapterTitle ]
             ]
         ]
 
@@ -108,60 +85,75 @@ footer :
     -> List (Html a)
 footer =
     let
-        button action =
-            case action of
-                Just msg ->
-                    Html.a
-                        [ monospace
-                        , centerStrip
-                        , Html.style
-                            [ ( "background-color", "#009688" )
-                            , ( "text-decoration", "underline" )
-                            , ( "cursor", "pointer" )
-                            , ( "padding", "1em 0" )
-                            ]
-                        , Html.onClick msg
-                        ]
+        active msg =
+            Html.a
+                [ font
+                , expand
+                , Html.style
+                    [ ( "background-color", palette.green )
+                    , ( "text-decoration", "underline" )
+                    , ( "cursor", "pointer" )
+                    , ( "padding", "1em 0" )
+                    ]
+                , Html.onClick msg
+                ]
 
-                Nothing ->
-                    Html.div
-                        [ monospace
-                        , centerStrip
-                        , Html.style
-                            [ ( "background-color", "#B71C1C" )
-                            , ( "padding", "1em 0" )
-                            ]
+        inactive =
+            Html.div
+                [ font
+                , expand
+                , Html.style
+                    [ ( "background-color", palette.red )
+                    , ( "padding", "1em 0" )
+                    ]
+                ]
+                << flip (++)
+                    [ Html.p
+                        [ Html.style [ ( "font-style", "italic" ) ]
                         ]
-                        << flip (++)
-                            [ Html.p
-                                [ Html.style [ ( "font-style", "italic" ) ]
-                                ]
-                                [ Html.text "You are too far away!"
-                                ]
-                            ]
+                        [ Html.text "You are too far away!"
+                        ]
+                    ]
 
         option { place, description, action } =
-            button action
-                [ Html.h3 [] [ Html.text place ]
-                , Html.h4 [] [ Html.text description ]
-                ]
+            [ Html.h3 [] [ Html.text place ]
+            , Html.h4 [] [ Html.text description ]
+            ]
+                |> Maybe.withDefault inactive (Maybe.map active action)
     in
         List.map option
 
 
-centerStrip : Html.Attribute a
-centerStrip =
-    Html.style
-        [ ( "margin", "0 auto" )
-        , ( "display", "block" )
-        , ( "width", "100%" )
-        , ( "max-width", "720px" )
+wrap : List (Html a) -> Html a
+wrap =
+    Html.div
+        [ Html.style
+            [ ( "text-align", "center" )
+            , ( "line-height", "1em" )
+            , ( "margin", "1em auto" )
+            , ( "max-width", "720px" )
+            ]
         ]
 
 
-monospace : Html.Attribute a
-monospace =
+expand : Html.Attribute a
+expand =
+    Html.style
+        [ ( "display", "block" )
+        , ( "width", "100%" )
+        ]
+
+
+font : Html.Attribute a
+font =
     Html.style
         [ ( "font-family", "monospace" )
         , ( "color", "#FFFFFF" )
         ]
+
+
+palette =
+    { gray = "#333333"
+    , red = "#B71C1C"
+    , green = "#009688"
+    }
