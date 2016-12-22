@@ -12,8 +12,8 @@ type Content
 
 
 type View
-    = Loading
-    | Error
+    = Error
+    | Loading (Story.Msg Content) (List String)
     | Chapter
         { name : String
         , chapterTitle : String
@@ -45,7 +45,7 @@ table content =
 
         Two ->
             { title = "Single Ladies"
-            , length = 5
+            , length = 2
             , next = []
             }
 
@@ -69,28 +69,41 @@ config =
     }
 
 
-update =
-    Story.update config
+do :
+    String
+    -> List (Story.Msg Content)
+    -> ( Story.Model Content, Cmd (Story.Msg Content) )
+do =
+    Story.init config
+        >> List.foldl (\msg ( model, _ ) -> Story.update config msg model)
 
 
-present =
-    Story.present config
+present : String -> List (Story.Msg Content) -> View
+present cheat =
+    Story.present config << Tuple.first << do cheat
 
 
-withoutCheating =
-    Story.init config ""
+withoutCheat =
+    ""
 
 
-withCheating =
-    Story.init config "#cheat"
+withCheat =
+    "#cheat"
 
 
-model =
-    Tuple.first
+cheatFuzzer =
+    Fuzz.frequencyOrCrash
+        [ ( 1, Fuzz.constant withCheat )
+        , ( 1, Fuzz.constant withoutCheat )
+        ]
 
 
-cmd =
-    Tuple.second
+withinThresholdFuzzer =
+    Fuzz.floatRange (negate Story.threshold) Story.threshold
+
+
+invert =
+    Fuzz.map (flip (/) Story.threshold)
 
 
 all : Test
@@ -100,61 +113,108 @@ all =
             "presents error after updated with location error"
           <|
             \_ ->
-                withoutCheating
-                    |> model
-                    >> update Story.LocationError
-                    >> model
-                    >> present
-                    >> Expect.equal Error
+                present withoutCheat [ Story.LocationError ]
+                    |> Expect.equal Error
+        , fuzz cheatFuzzer
+            "presents loading after initialize"
+          <|
+            \cheat ->
+                present cheat []
+                    |> Expect.equal
+                        (Loading
+                            Story.PanelLoaded
+                            [ "google.com/Great%20Beginnings/001.png"
+                            , "google.com/Great%20Beginnings/002.png"
+                            , "google.com/Great%20Beginnings/003.png"
+                            ]
+                        )
+        , fuzz (Fuzz.intRange 0 99)
+            "presents loading until location granted without cheat"
+          <|
+            \count ->
+                present withoutCheat (List.repeat count Story.PanelLoaded)
+                    |> Expect.equal
+                        (Loading
+                            Story.PanelLoaded
+                            [ "google.com/Great%20Beginnings/001.png"
+                            , "google.com/Great%20Beginnings/002.png"
+                            , "google.com/Great%20Beginnings/003.png"
+                            ]
+                        )
         , test
-            "presents loading after initialize without cheat"
+            "presents chapter once panels are loaded with cheat"
           <|
             \_ ->
-                withoutCheating
-                    |> model
-                    >> present
-                    >> Expect.equal Loading
-        , test
-            "presents simple chapter after initialize with cheat"
-          <|
-            \_ ->
-                withCheating
-                    |> model
-                    >> update (Story.Choose Two)
-                    >> model
-                    >> present
-                    >> Expect.equal
+                present withCheat
+                    [ Story.PanelLoaded
+                    , Story.PanelLoaded
+                    , Story.PanelLoaded
+                    ]
+                    |> Expect.equal
                         (Chapter
                             { name = "Test Story"
-                            , chapterTitle = "Single Ladies"
+                            , chapterTitle = "Great Beginnings"
                             , panelUrls =
-                                [ "google.com/Single%20Ladies/001.png"
-                                , "google.com/Single%20Ladies/002.png"
-                                , "google.com/Single%20Ladies/003.png"
-                                , "google.com/Single%20Ladies/004.png"
-                                , "google.com/Single%20Ladies/005.png"
+                                [ "google.com/Great%20Beginnings/001.png"
+                                , "google.com/Great%20Beginnings/002.png"
+                                , "google.com/Great%20Beginnings/003.png"
                                 ]
                             , decisions =
-                                []
+                                [ { place = "Chicago"
+                                  , description = "windy city"
+                                  , action = Just (Story.Choose Two)
+                                  }
+                                ]
                             }
                         )
-        , fuzz3
-            (Fuzz.frequencyOrCrash
-                [ ( 1, Fuzz.constant withCheating )
-                , ( 1, Fuzz.constant withoutCheating )
-                ]
-            )
-            (Fuzz.floatRange (negate Story.threshold) Story.threshold)
-            (Fuzz.floatRange (negate Story.threshold) Story.threshold)
-            "presents complex chapter after initialize and move is in range"
+        , test
+            "presents loading on each new chapter"
           <|
-            \precondition latitude longitude ->
-                precondition
-                    |> model
-                    >> update (Story.Move latitude longitude)
-                    >> model
-                    >> present
-                    >> Expect.equal
+            \_ ->
+                present withCheat
+                    [ Story.PanelLoaded
+                    , Story.PanelLoaded
+                    , Story.Choose Two
+                    ]
+                    |> Expect.equal
+                        (Loading
+                            Story.PanelLoaded
+                            [ "google.com/Single%20Ladies/001.png"
+                            , "google.com/Single%20Ladies/002.png"
+                            ]
+                        )
+        , test
+            "presents loading until location granted without cheat"
+          <|
+            \_ ->
+                present withoutCheat
+                    [ Story.PanelLoaded
+                    , Story.PanelLoaded
+                    , Story.PanelLoaded
+                    ]
+                    |> Expect.equal
+                        (Loading
+                            Story.PanelLoaded
+                            [ "google.com/Great%20Beginnings/001.png"
+                            , "google.com/Great%20Beginnings/002.png"
+                            , "google.com/Great%20Beginnings/003.png"
+                            ]
+                        )
+        , fuzz3
+            cheatFuzzer
+            withinThresholdFuzzer
+            withinThresholdFuzzer
+            "presents chapter after loaded and move is in range"
+          <|
+            \cheat latitude longitude ->
+                present cheat
+                    [ Story.Move latitude longitude
+                    , Story.PanelLoaded
+                    , Story.PanelLoaded
+                    , Story.PanelLoaded
+                    , Story.PanelLoaded
+                    ]
+                    |> Expect.equal
                         (Chapter
                             { name = "Test Story"
                             , chapterTitle = "Great Beginnings"
@@ -172,23 +232,18 @@ all =
                             }
                         )
         , fuzz2
-            (Fuzz.map
-                (flip (/) Story.threshold)
-                (Fuzz.floatRange (negate Story.threshold) Story.threshold)
-            )
-            (Fuzz.map
-                (flip (/) Story.threshold)
-                (Fuzz.floatRange (negate Story.threshold) Story.threshold)
-            )
+            (invert withinThresholdFuzzer)
+            (invert withinThresholdFuzzer)
             "presents complex chapter after move is not in range without cheat"
           <|
             \latitude longitude ->
-                withoutCheating
-                    |> model
-                    >> update (Story.Move latitude longitude)
-                    >> model
-                    >> present
-                    >> Expect.equal
+                present withoutCheat
+                    [ Story.Move latitude longitude
+                    , Story.PanelLoaded
+                    , Story.PanelLoaded
+                    , Story.PanelLoaded
+                    ]
+                    |> Expect.equal
                         (Chapter
                             { name = "Test Story"
                             , chapterTitle = "Great Beginnings"
@@ -209,59 +264,53 @@ all =
             "scrolls on new chapter"
           <|
             \_ ->
-                withoutCheating
-                    |> model
-                    >> update (Story.Choose Two)
-                    >> cmd
-                    >> Expect.equal scroll
+                do withoutCheat [ Story.Choose Two ]
+                    |> Tuple.second
+                    |> Expect.equal scroll
         , test
             "does not send geolocation task with cheat"
           <|
             \_ ->
-                withCheating
-                    |> cmd
-                    >> Expect.equal Cmd.none
+                do withCheat []
+                    |> Tuple.second
+                    |> Expect.equal Cmd.none
         , test
             "does not subscribe to geolocation with cheat"
           <|
             \_ ->
-                withCheating
-                    |> model
-                    >> Story.subscriptions
-                    >> Expect.equal Sub.none
+                do withCheat []
+                    |> Tuple.first
+                    |> Story.subscriptions
+                    |> Expect.equal Sub.none
         , test
             "sends geolocation task without cheat"
           <|
             \_ ->
-                withoutCheating
-                    |> cmd
-                    >> Expect.notEqual Cmd.none
+                do withoutCheat []
+                    |> Tuple.second
+                    |> Expect.notEqual Cmd.none
         , test
             "does not subscribe to geolocation when loading without cheat"
           <|
             \_ ->
-                withoutCheating
-                    |> model
-                    >> Story.subscriptions
-                    >> Expect.equal Sub.none
+                do withoutCheat []
+                    |> Tuple.first
+                    |> Story.subscriptions
+                    |> Expect.equal Sub.none
         , test
             "subscribes to geolocation when loading without cheat after move"
           <|
             \_ ->
-                withoutCheating
-                    |> model
-                    >> update (Story.Move 1 1)
-                    >> model
-                    >> Story.subscriptions
-                    >> Expect.notEqual Sub.none
+                do withoutCheat [ (Story.Move 1 1) ]
+                    |> Tuple.first
+                    |> Story.subscriptions
+                    |> Expect.notEqual Sub.none
         , test
             "subscribes to geolocation when loading without cheat after error"
           <|
             \_ ->
-                withoutCheating
-                    |> model
-                    >> update Story.LocationError
-                    >> model
-                    >> Story.subscriptions
-                    >> Expect.notEqual Sub.none
+                do withoutCheat [ Story.LocationError ]
+                    |> Tuple.first
+                    |> Story.subscriptions
+                    |> Expect.notEqual Sub.none
         ]

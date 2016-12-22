@@ -20,6 +20,7 @@ type Msg content
     = Move Float Float
     | LocationError
     | Choose content
+    | PanelLoaded
 
 
 type Model content
@@ -32,6 +33,7 @@ type alias Story content =
     , imageFormat : String
     , current : Chapter content
     , location : Location
+    , panelsLoaded : Int
     }
 
 
@@ -84,6 +86,7 @@ init config flags =
             , imageFormat = config.imageFormat
             , current = config.table config.start
             , location = location
+            , panelsLoaded = 0
             }
         , cmd
         )
@@ -107,15 +110,20 @@ update config msg (Model story) =
             )
 
         Choose content ->
-            ( Model { story | current = config.table content }
+            ( Model { story | current = config.table content, panelsLoaded = 0 }
             , config.scroll
+            )
+
+        PanelLoaded ->
+            ( Model { story | panelsLoaded = story.panelsLoaded + 1 }
+            , Cmd.none
             )
 
 
 present :
     { config
-        | loading : b
-        , error : b
+        | error : b
+        , loading : Msg a -> List String -> b
         , chapter :
             { name : String
             , chapterTitle : String
@@ -133,25 +141,32 @@ present :
     -> b
 present config (Model story) =
     let
-        present_ f =
-            { name = story.name
-            , chapterTitle = story.current.title
-            , panelUrls = panelUrls story
-            , decisions = decisions f story
-            }
+        loading =
+            config.loading PanelLoaded (panelUrls story)
+
+        chapter eligible =
+            if story.panelsLoaded < story.current.length then
+                loading
+            else
+                config.chapter
+                    { name = story.name
+                    , chapterTitle = story.current.title
+                    , panelUrls = panelUrls story
+                    , decisions = decisions eligible story
+                    }
     in
         case story.location of
-            Loading ->
-                config.loading
-
             Error ->
                 config.error
 
+            Loading ->
+                loading
+
             Coordinates latitude longitude ->
-                config.chapter (present_ (curry nearby latitude longitude))
+                chapter (curry nearby latitude longitude)
 
             NotRequired ->
-                config.chapter (present_ (always True))
+                chapter (always True)
 
 
 panelUrls : Story a -> List String

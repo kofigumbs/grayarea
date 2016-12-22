@@ -1,5 +1,6 @@
 module View exposing (loading, error, chapter)
 
+import Json.Decode
 import Html exposing (Html)
 import Html.Attributes as Html
 import Html.Events as Html
@@ -12,20 +13,45 @@ palette =
     }
 
 
-loading : Html a
-loading =
-    header "loading..." "" palette.gray
+wrap : List (Html a) -> Html a
+wrap =
+    Html.div
+        [ Html.style
+            [ ( "text-align", "center" )
+            , ( "line-height", "1" )
+            , ( "margin", "1em 0" )
+            ]
+        ]
 
 
 error : Html a
 error =
-    header
-        "I couldn't access your location"
-        """
-        Gray Area uses your location to track progress.
-        Please let me access your location to continue.
-        """
-        palette.red
+    wrap
+        [ header
+            "I couldn't access your location"
+            """
+            Gray Area uses your location to track progress.
+            Please let me access your location to continue.
+            """
+            palette.red
+        ]
+
+
+loading : a -> List String -> Html a
+loading msg urls =
+    let
+        img url =
+            Html.img
+                [ Html.src url
+                , Html.on "load" (Json.Decode.succeed msg)
+                ]
+                []
+    in
+        wrap
+            [ header "loading..." "" palette.gray
+            , List.map img urls
+                |> Html.div [ Html.hidden True ]
+            ]
 
 
 chapter :
@@ -45,13 +71,7 @@ chapter { name, chapterTitle, panelUrls, decisions } =
         |> (::) (header name chapterTitle "#333333")
         |> flip (++) (footer decisions)
         |> List.intersperse (Html.br [] [])
-        |> Html.div
-            [ Html.style
-                [ ( "text-align", "center" )
-                , ( "line-height", "1" )
-                , ( "margin", "1em 0" )
-                ]
-            ]
+        |> wrap
 
 
 panel : String -> Html a
@@ -89,7 +109,7 @@ footer :
     -> List (Html a)
 footer =
     let
-        wrap action =
+        button action =
             case action of
                 Just msg ->
                     Html.a
@@ -122,7 +142,7 @@ footer =
                             ]
 
         option { place, description, action } =
-            wrap action
+            button action
                 [ Html.h3 [] [ Html.text place ]
                 , Html.h4 [] [ Html.text description ]
                 ]
