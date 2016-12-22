@@ -69,9 +69,9 @@ chapter :
 chapter { name, chapterTitle, panelUrls, decisions } =
     List.map panel panelUrls
         |> (::) (header name chapterTitle "#333333")
-        |> flip (++) (footer decisions)
-        |> List.intersperse (Html.br [] [])
-        |> wrap
+        >> flip (++) (footer decisions)
+        >> List.intersperse (Html.br [] [])
+        >> wrap
 
 
 panel : String -> Html a
@@ -91,7 +91,6 @@ header name chapterTitle color =
             [ ( "text-align", "left" )
             , ( "background-color", color )
             ]
-        , Html.id "header"
         ]
         [ Html.div
             [ Html.style
