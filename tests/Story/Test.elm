@@ -12,8 +12,9 @@ type Content
 
 
 type View
-    = Error
-    | Loading (Story.Msg Content) (List String)
+    = LocationError
+    | LoadError
+    | Loading (Story.Msg Content) (Story.Msg Content) (List String)
     | Chapter
         { name : String
         , chapterTitle : String
@@ -64,7 +65,8 @@ config =
     , table = table
     , scroll = scroll
     , loading = Loading
-    , error = Error
+    , locationError = LocationError
+    , loadError = LoadError
     , chapter = Chapter
     }
 
@@ -110,11 +112,17 @@ all : Test
 all =
     describe "Story"
         [ test
-            "presents error after updated with location error"
+            "presents location access after updated with location error"
           <|
             \_ ->
                 present withoutCheat [ Story.LocationError ]
-                    |> Expect.equal Error
+                    |> Expect.equal LocationError
+        , fuzz cheatFuzzer
+            "presents error after updated with load error"
+          <|
+            \_ ->
+                present withCheat [ Story.LoadError ]
+                    |> Expect.equal LoadError
         , fuzz cheatFuzzer
             "presents loading after initialize"
           <|
@@ -122,7 +130,8 @@ all =
                 present cheat []
                     |> Expect.equal
                         (Loading
-                            Story.PanelLoaded
+                            Story.LoadError
+                            Story.LoadSuccess
                             [ "google.com/Great%20Beginnings/001.png"
                             , "google.com/Great%20Beginnings/002.png"
                             , "google.com/Great%20Beginnings/003.png"
@@ -132,10 +141,11 @@ all =
             "presents loading until location granted without cheat"
           <|
             \count ->
-                present withoutCheat (List.repeat count Story.PanelLoaded)
+                present withoutCheat (List.repeat count Story.LoadSuccess)
                     |> Expect.equal
                         (Loading
-                            Story.PanelLoaded
+                            Story.LoadError
+                            Story.LoadSuccess
                             [ "google.com/Great%20Beginnings/001.png"
                             , "google.com/Great%20Beginnings/002.png"
                             , "google.com/Great%20Beginnings/003.png"
@@ -146,9 +156,9 @@ all =
           <|
             \_ ->
                 present withCheat
-                    [ Story.PanelLoaded
-                    , Story.PanelLoaded
-                    , Story.PanelLoaded
+                    [ Story.LoadSuccess
+                    , Story.LoadSuccess
+                    , Story.LoadSuccess
                     ]
                     |> Expect.equal
                         (Chapter
@@ -172,13 +182,14 @@ all =
           <|
             \_ ->
                 present withCheat
-                    [ Story.PanelLoaded
-                    , Story.PanelLoaded
+                    [ Story.LoadSuccess
+                    , Story.LoadSuccess
                     , Story.Chosen Two
                     ]
                     |> Expect.equal
                         (Loading
-                            Story.PanelLoaded
+                            Story.LoadError
+                            Story.LoadSuccess
                             [ "google.com/Single%20Ladies/001.png"
                             , "google.com/Single%20Ladies/002.png"
                             ]
@@ -188,13 +199,14 @@ all =
           <|
             \_ ->
                 present withoutCheat
-                    [ Story.PanelLoaded
-                    , Story.PanelLoaded
-                    , Story.PanelLoaded
+                    [ Story.LoadSuccess
+                    , Story.LoadSuccess
+                    , Story.LoadSuccess
                     ]
                     |> Expect.equal
                         (Loading
-                            Story.PanelLoaded
+                            Story.LoadError
+                            Story.LoadSuccess
                             [ "google.com/Great%20Beginnings/001.png"
                             , "google.com/Great%20Beginnings/002.png"
                             , "google.com/Great%20Beginnings/003.png"
@@ -209,10 +221,9 @@ all =
             \cheat latitude longitude ->
                 present cheat
                     [ Story.Moved latitude longitude
-                    , Story.PanelLoaded
-                    , Story.PanelLoaded
-                    , Story.PanelLoaded
-                    , Story.PanelLoaded
+                    , Story.LoadSuccess
+                    , Story.LoadSuccess
+                    , Story.LoadSuccess
                     ]
                     |> Expect.equal
                         (Chapter
@@ -239,9 +250,9 @@ all =
             \latitude longitude ->
                 present withoutCheat
                     [ Story.Moved latitude longitude
-                    , Story.PanelLoaded
-                    , Story.PanelLoaded
-                    , Story.PanelLoaded
+                    , Story.LoadSuccess
+                    , Story.LoadSuccess
+                    , Story.LoadSuccess
                     ]
                     |> Expect.equal
                         (Chapter

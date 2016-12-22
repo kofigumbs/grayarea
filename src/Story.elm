@@ -19,8 +19,9 @@ import Task
 type Msg content
     = Moved Float Float
     | LocationError
+    | LoadError
+    | LoadSuccess
     | Chosen content
-    | PanelLoaded
 
 
 type Model content
@@ -33,7 +34,7 @@ type alias Story content =
     , imageFormat : String
     , current : Chapter content
     , location : Location
-    , panelsLoaded : Int
+    , panelsRemaining : Result () Int
     }
 
 
@@ -74,6 +75,9 @@ init config flags =
             Result.map (\current -> Moved current.latitude current.longitude)
                 >> Result.withDefault LocationError
 
+        current =
+            config.table config.start
+
         ( location, cmd ) =
             if String.contains "cheat" flags then
                 ( NotRequired, Cmd.none )
@@ -84,9 +88,9 @@ init config flags =
             { name = config.name
             , rootUrl = config.rootUrl
             , imageFormat = config.imageFormat
-            , current = config.table config.start
+            , current = current
             , location = location
-            , panelsLoaded = 0
+            , panelsRemaining = Ok current.length
             }
         , cmd
         )
@@ -99,31 +103,45 @@ update :
     -> ( Model a, Cmd (Msg a) )
 update config msg (Model story) =
     case msg of
-        LocationError ->
-            ( Model { story | location = Error }
-            , Cmd.none
-            )
-
         Moved latitude longitude ->
             ( Model { story | location = Coordinates latitude longitude }
             , Cmd.none
             )
 
-        Chosen content ->
-            ( Model { story | current = config.table content, panelsLoaded = 0 }
-            , config.scroll
+        LocationError ->
+            ( Model { story | location = Error }
+            , Cmd.none
             )
 
-        PanelLoaded ->
-            ( Model { story | panelsLoaded = story.panelsLoaded + 1 }
+        LoadError ->
+            ( Model { story | panelsRemaining = Err () }
             , Cmd.none
+            )
+
+        LoadSuccess ->
+            ( Model
+                { story
+                    | panelsRemaining =
+                        Result.map ((+) -1) story.panelsRemaining
+                }
+            , Cmd.none
+            )
+
+        Chosen content ->
+            ( Model
+                { story
+                    | current = config.table content
+                    , panelsRemaining = Ok story.current.length
+                }
+            , config.scroll
             )
 
 
 present :
     { config
-        | error : b
-        , loading : Msg a -> List String -> b
+        | loading : Msg a -> Msg a -> List String -> b
+        , locationError : b
+        , loadError : b
         , chapter :
             { name : String
             , chapterTitle : String
@@ -140,33 +158,31 @@ present :
     -> Model a
     -> b
 present config (Model story) =
-    let
-        loading =
-            config.loading PanelLoaded (panelUrls story)
+    case ( story.location, story.panelsRemaining ) of
+        ( _, Err _ ) ->
+            config.loadError
 
-        chapter eligible =
-            if story.panelsLoaded < story.current.length then
-                loading
-            else
-                config.chapter
-                    { name = story.name
-                    , chapterTitle = story.current.title
-                    , panelUrls = panelUrls story
-                    , decisions = decisions eligible story
-                    }
-    in
-        case story.location of
-            Error ->
-                config.error
+        ( Error, _ ) ->
+            config.locationError
 
-            Asking ->
-                loading
+        ( Coordinates latitude longitude, Ok 0 ) ->
+            config.chapter
+                { name = story.name
+                , chapterTitle = story.current.title
+                , panelUrls = panelUrls story
+                , decisions = decisions (curry nearby latitude longitude) story
+                }
 
-            Coordinates latitude longitude ->
-                chapter (curry nearby latitude longitude)
+        ( NotRequired, Ok 0 ) ->
+            config.chapter
+                { name = story.name
+                , chapterTitle = story.current.title
+                , panelUrls = panelUrls story
+                , decisions = decisions (always True) story
+                }
 
-            NotRequired ->
-                chapter (always True)
+        ( _, Ok _ ) ->
+            config.loading LoadError LoadSuccess (panelUrls story)
 
 
 panelUrls : Story a -> List String

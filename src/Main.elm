@@ -232,7 +232,8 @@ config =
     , start = Prelude
     , table = table
     , scroll = scroll ()
-    , error = View.error
+    , locationError = View.locationError
+    , loadError = View.loadError
     , loading = View.loading
     , chapter = View.chapter
     }

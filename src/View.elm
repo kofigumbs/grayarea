@@ -1,4 +1,4 @@
-module View exposing (loading, error, chapter)
+module View exposing (locationError, loadError, loading, chapter)
 
 import Json.Decode
 import Html exposing (Html)
@@ -6,11 +6,11 @@ import Html.Attributes as Html
 import Html.Events as Html
 
 
-error : Html a
-error =
+locationError : Html a
+locationError =
     wrap
         [ header
-            "I couldn't access your location"
+            "Uh oh"
             """
             Gray Area uses your location to track progress.
             Please let me access your location to continue.
@@ -19,13 +19,24 @@ error =
         ]
 
 
-loading : a -> List String -> Html a
-loading msg urls =
+loadError : Html a
+loadError =
+    wrap
+        [ header
+            "Uh oh"
+            "I couldn't load the story for some reason. My apologies."
+            palette.red
+        ]
+
+
+loading : a -> a -> List String -> Html a
+loading error success urls =
     let
         img url =
             Html.img
                 [ Html.src url
-                , Html.on "load" (Json.Decode.succeed msg)
+                , Html.on "load" (Json.Decode.succeed success)
+                , Html.on "error" (Json.Decode.succeed error)
                 ]
                 []
     in
@@ -129,7 +140,7 @@ wrap =
     Html.div
         [ Html.style
             [ ( "text-align", "center" )
-            , ( "line-height", "1em" )
+            , ( "line-height", "1.5em" )
             , ( "margin", "1em auto" )
             , ( "max-width", "720px" )
             ]
