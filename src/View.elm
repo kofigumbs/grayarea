@@ -1,9 +1,26 @@
-module View exposing (locationError, loadError, loading, chapter)
+module View exposing (view)
 
 import Json.Decode
 import Html exposing (Html)
 import Html.Attributes as Html
 import Html.Events as Html
+import Story.View
+
+
+view : Story.View.Model a -> Html a
+view model =
+    case model of
+        Story.View.Loading error success urls ->
+            loading error success urls
+
+        Story.View.LocationError ->
+            locationError
+
+        Story.View.LoadError ->
+            loadError
+
+        Story.View.Chapter data ->
+            chapter data
 
 
 locationError : Html a

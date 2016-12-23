@@ -232,10 +232,6 @@ config =
     , start = Prelude
     , table = table
     , scroll = scroll ()
-    , locationError = View.locationError
-    , loadError = View.loadError
-    , loading = View.loading
-    , chapter = View.chapter
     }
 
 
@@ -243,6 +239,6 @@ main =
     Html.programWithFlags
         { init = Story.init config
         , update = Story.update config
-        , view = Story.present config
+        , view = Story.present >> View.view
         , subscriptions = Story.subscriptions
         }

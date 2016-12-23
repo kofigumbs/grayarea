@@ -4,28 +4,12 @@ import Expect
 import Fuzz
 import Test exposing (..)
 import Story
+import Story.View
 
 
 type Content
     = One
     | Two
-
-
-type View
-    = LocationError
-    | LoadError
-    | Loading (Story.Msg Content) (Story.Msg Content) (List String)
-    | Chapter
-        { name : String
-        , chapterTitle : String
-        , panelUrls : List String
-        , decisions :
-            List
-                { place : String
-                , description : String
-                , action : Maybe (Story.Msg Content)
-                }
-        }
 
 
 table : Content -> Story.Chapter Content
@@ -64,10 +48,6 @@ config =
     , start = One
     , table = table
     , scroll = scroll
-    , loading = Loading
-    , locationError = LocationError
-    , loadError = LoadError
-    , chapter = Chapter
     }
 
 
@@ -80,9 +60,12 @@ do =
         >> List.foldl (\msg ( model, _ ) -> Story.update config msg model)
 
 
-present : String -> List (Story.Msg Content) -> View
+present :
+    String
+    -> List (Story.Msg Content)
+    -> Story.View.Model (Story.Msg Content)
 present cheat =
-    Story.present config << Tuple.first << do cheat
+    Story.present << Tuple.first << do cheat
 
 
 withoutCheat =
@@ -116,20 +99,20 @@ all =
           <|
             \_ ->
                 present withoutCheat [ Story.LocationError ]
-                    |> Expect.equal LocationError
+                    |> Expect.equal Story.View.LocationError
         , fuzz cheatFuzzer
             "presents error after updated with load error"
           <|
             \_ ->
                 present withCheat [ Story.LoadError ]
-                    |> Expect.equal LoadError
+                    |> Expect.equal Story.View.LoadError
         , fuzz cheatFuzzer
             "presents loading after initialize"
           <|
             \cheat ->
                 present cheat []
                     |> Expect.equal
-                        (Loading
+                        (Story.View.Loading
                             Story.LoadError
                             Story.LoadSuccess
                             [ "google.com/Great%20Beginnings/001.png"
@@ -143,7 +126,7 @@ all =
             \count ->
                 present withoutCheat (List.repeat count Story.LoadSuccess)
                     |> Expect.equal
-                        (Loading
+                        (Story.View.Loading
                             Story.LoadError
                             Story.LoadSuccess
                             [ "google.com/Great%20Beginnings/001.png"
@@ -161,7 +144,7 @@ all =
                     , Story.LoadSuccess
                     ]
                     |> Expect.equal
-                        (Chapter
+                        (Story.View.Chapter
                             { name = "Test Story"
                             , chapterTitle = "Great Beginnings"
                             , panelUrls =
@@ -187,7 +170,7 @@ all =
                     , Story.Chosen Two
                     ]
                     |> Expect.equal
-                        (Loading
+                        (Story.View.Loading
                             Story.LoadError
                             Story.LoadSuccess
                             [ "google.com/Single%20Ladies/001.png"
@@ -204,7 +187,7 @@ all =
                     , Story.LoadSuccess
                     ]
                     |> Expect.equal
-                        (Loading
+                        (Story.View.Loading
                             Story.LoadError
                             Story.LoadSuccess
                             [ "google.com/Great%20Beginnings/001.png"
@@ -226,7 +209,7 @@ all =
                     , Story.LoadSuccess
                     ]
                     |> Expect.equal
-                        (Chapter
+                        (Story.View.Chapter
                             { name = "Test Story"
                             , chapterTitle = "Great Beginnings"
                             , panelUrls =
@@ -255,7 +238,7 @@ all =
                     , Story.LoadSuccess
                     ]
                     |> Expect.equal
-                        (Chapter
+                        (Story.View.Chapter
                             { name = "Test Story"
                             , chapterTitle = "Great Beginnings"
                             , panelUrls =

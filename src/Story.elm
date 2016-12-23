@@ -14,6 +14,7 @@ import String
 import Geolocation
 import Http
 import Task
+import Story.View
 
 
 type Msg content
@@ -137,36 +138,17 @@ update config msg (Model story) =
             )
 
 
-present :
-    { config
-        | loading : Msg a -> Msg a -> List String -> b
-        , locationError : b
-        , loadError : b
-        , chapter :
-            { name : String
-            , chapterTitle : String
-            , panelUrls : List String
-            , decisions :
-                List
-                    { place : String
-                    , description : String
-                    , action : Maybe (Msg a)
-                    }
-            }
-            -> b
-    }
-    -> Model a
-    -> b
-present config (Model story) =
+present : Model content -> Story.View.Model (Msg content)
+present (Model story) =
     case ( story.location, story.panelsRemaining ) of
         ( _, Err _ ) ->
-            config.loadError
+            Story.View.LoadError
 
         ( Error, _ ) ->
-            config.locationError
+            Story.View.LocationError
 
         ( Coordinates latitude longitude, Ok 0 ) ->
-            config.chapter
+            Story.View.Chapter
                 { name = story.name
                 , chapterTitle = story.current.title
                 , panelUrls = panelUrls story
@@ -174,7 +156,7 @@ present config (Model story) =
                 }
 
         ( NotRequired, Ok 0 ) ->
-            config.chapter
+            Story.View.Chapter
                 { name = story.name
                 , chapterTitle = story.current.title
                 , panelUrls = panelUrls story
@@ -182,7 +164,7 @@ present config (Model story) =
                 }
 
         ( _, Ok _ ) ->
-            config.loading LoadError LoadSuccess (panelUrls story)
+            Story.View.Loading LoadError LoadSuccess (panelUrls story)
 
 
 panelUrls : Story a -> List String
