@@ -132,7 +132,7 @@ update config msg (Model story) =
             ( Model
                 { story
                     | current = config.table content
-                    , panelsRemaining = Ok story.current.length
+                    , panelsRemaining = Ok (.length (config.table content))
                 }
             , config.scroll
             )

@@ -178,6 +178,26 @@ all =
                             ]
                         )
         , test
+            "presents next chapter after loading all the panels"
+          <|
+            \_ ->
+                present withCheat
+                    [ Story.Chosen Two
+                    , Story.LoadSuccess
+                    , Story.LoadSuccess
+                    ]
+                    |> Expect.equal
+                        (Story.View.Chapter
+                            { name = "Test Story"
+                            , chapterTitle = "Single Ladies"
+                            , panelUrls =
+                                [ "google.com/Single%20Ladies/001.png"
+                                , "google.com/Single%20Ladies/002.png"
+                                ]
+                            , decisions = []
+                            }
+                        )
+        , test
             "presents loading until location granted without cheat"
           <|
             \_ ->
