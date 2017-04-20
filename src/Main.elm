@@ -225,20 +225,20 @@ table content =
 port scroll : () -> Cmd a
 
 
-config =
-    { name = "Gray Area"
-    , rootUrl = "https://kofi.sexy/grayarea"
-    , imageFormat = "png"
-    , start = Prelude
-    , table = table
-    , scroll = scroll ()
-    }
-
-
 main =
-    Html.programWithFlags
-        { init = Story.init config
-        , update = Story.update config
-        , view = Story.present >> View.view
-        , subscriptions = Story.subscriptions
-        }
+    let
+        config =
+            { name = "Gray Area"
+            , rootUrl = "/grayarea"
+            , imageFormat = "png"
+            , start = Prelude
+            , table = table
+            , scroll = scroll ()
+            }
+    in
+        Html.programWithFlags
+            { init = Story.init config
+            , update = Story.update config
+            , view = Story.present >> View.view
+            , subscriptions = Story.subscriptions
+            }

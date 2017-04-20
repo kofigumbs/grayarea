@@ -6,7 +6,6 @@ module Story
         , init
         , update
         , present
-        , threshold
         , subscriptions
         )
 
@@ -132,7 +131,7 @@ update config msg (Model story) =
             ( Model
                 { story
                     | current = config.table content
-                    , panelsRemaining = Ok (.length (config.table content))
+                    , panelsRemaining = Ok (config.table content).length
                 }
             , config.scroll
             )
@@ -171,15 +170,13 @@ panelUrls : Story a -> List String
 panelUrls story =
     let
         url num =
-            String.join ""
-                [ story.rootUrl
-                , "/"
-                , Http.encodeUri story.current.title
-                , "/"
-                , String.padLeft 3 '0' (toString num)
-                , "."
-                , story.imageFormat
-                ]
+            story.rootUrl
+                ++ "/"
+                ++ Http.encodeUri story.current.title
+                ++ "/"
+                ++ String.padLeft 3 '0' (toString num)
+                ++ "."
+                ++ story.imageFormat
     in
         List.map url (List.range 1 story.current.length)
 

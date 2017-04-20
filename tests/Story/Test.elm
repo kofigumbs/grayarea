@@ -1,7 +1,6 @@
 module Story.Test exposing (all)
 
 import Expect
-import Fuzz
 import Test exposing (..)
 import Story
 import Story.View
@@ -38,7 +37,7 @@ table content =
 scroll : Cmd (Story.Msg Content)
 scroll =
     Cmd.none
-        |> Cmd.map (always Debug.crash "this won't evaluate")
+        |> Cmd.map (always Debug.crash "this is just for comparison")
 
 
 config =
@@ -51,44 +50,12 @@ config =
     }
 
 
-do :
-    String
-    -> List (Story.Msg Content)
-    -> ( Story.Model Content, Cmd (Story.Msg Content) )
-do =
-    Story.init config
-        >> List.foldl (\msg ( model, _ ) -> Story.update config msg model)
-
-
-present :
-    String
-    -> List (Story.Msg Content)
-    -> Story.View.Model (Story.Msg Content)
-present cheat =
-    Story.present << Tuple.first << do cheat
-
-
-withoutCheat =
-    ""
-
-
-withCheat =
-    "#cheat"
-
-
-cheatFuzzer =
-    Fuzz.frequencyOrCrash
-        [ ( 1, Fuzz.constant withCheat )
-        , ( 1, Fuzz.constant withoutCheat )
-        ]
-
-
-withinThresholdFuzzer =
-    Fuzz.floatRange (negate Story.threshold) Story.threshold
-
-
-invert =
-    Fuzz.map (flip (/) Story.threshold)
+{-| "bind" for tuples. Useful for piping update functions!
+-}
+(|=) : ( a, b ) -> (a -> c) -> c
+(|=) ( a, _ ) f =
+    f a
+infixl 0 |=
 
 
 all : Test
@@ -98,19 +65,24 @@ all =
             "presents location access after updated with location error"
           <|
             \_ ->
-                present withoutCheat [ Story.LocationError ]
+                Story.init config ""
+                    |= Story.update config Story.LocationError
+                    |= Story.present
                     |> Expect.equal Story.View.LocationError
-        , fuzz cheatFuzzer
+        , test
             "presents error after updated with load error"
           <|
             \_ ->
-                present withCheat [ Story.LoadError ]
+                Story.init config ""
+                    |= Story.update config Story.LoadError
+                    |= Story.present
                     |> Expect.equal Story.View.LoadError
-        , fuzz cheatFuzzer
+        , test
             "presents loading after initialize"
           <|
-            \cheat ->
-                present cheat []
+            \_ ->
+                Story.init config ""
+                    |= Story.present
                     |> Expect.equal
                         (Story.View.Loading
                             Story.LoadError
@@ -120,11 +92,17 @@ all =
                             , "google.com/Great%20Beginnings/003.png"
                             ]
                         )
-        , fuzz (Fuzz.intRange 0 99)
+        , test
             "presents loading until location granted without cheat"
           <|
-            \count ->
-                present withoutCheat (List.repeat count Story.LoadSuccess)
+            \_ ->
+                Story.init config ""
+                    |= Story.update config Story.LoadSuccess
+                    |= Story.update config Story.LoadSuccess
+                    |= Story.update config Story.LoadSuccess
+                    |= Story.update config Story.LoadSuccess
+                    |= Story.update config Story.LoadSuccess
+                    |= Story.present
                     |> Expect.equal
                         (Story.View.Loading
                             Story.LoadError
@@ -138,11 +116,11 @@ all =
             "presents chapter once panels are loaded with cheat"
           <|
             \_ ->
-                present withCheat
-                    [ Story.LoadSuccess
-                    , Story.LoadSuccess
-                    , Story.LoadSuccess
-                    ]
+                Story.init config "#cheat"
+                    |= Story.update config Story.LoadSuccess
+                    |= Story.update config Story.LoadSuccess
+                    |= Story.update config Story.LoadSuccess
+                    |= Story.present
                     |> Expect.equal
                         (Story.View.Chapter
                             { name = "Test Story"
@@ -164,11 +142,11 @@ all =
             "presents loading on each new chapter"
           <|
             \_ ->
-                present withCheat
-                    [ Story.LoadSuccess
-                    , Story.LoadSuccess
-                    , Story.Chosen Two
-                    ]
+                Story.init config "#cheat"
+                    |= Story.update config Story.LoadSuccess
+                    |= Story.update config Story.LoadSuccess
+                    |= Story.update config (Story.Chosen Two)
+                    |= Story.present
                     |> Expect.equal
                         (Story.View.Loading
                             Story.LoadError
@@ -181,11 +159,11 @@ all =
             "presents next chapter after loading all the panels"
           <|
             \_ ->
-                present withCheat
-                    [ Story.Chosen Two
-                    , Story.LoadSuccess
-                    , Story.LoadSuccess
-                    ]
+                Story.init config "#cheat"
+                    |= Story.update config (Story.Chosen Two)
+                    |= Story.update config Story.LoadSuccess
+                    |= Story.update config Story.LoadSuccess
+                    |= Story.present
                     |> Expect.equal
                         (Story.View.Chapter
                             { name = "Test Story"
@@ -201,11 +179,11 @@ all =
             "presents loading until location granted without cheat"
           <|
             \_ ->
-                present withoutCheat
-                    [ Story.LoadSuccess
-                    , Story.LoadSuccess
-                    , Story.LoadSuccess
-                    ]
+                Story.init config ""
+                    |= Story.update config Story.LoadSuccess
+                    |= Story.update config Story.LoadSuccess
+                    |= Story.update config Story.LoadSuccess
+                    |= Story.present
                     |> Expect.equal
                         (Story.View.Loading
                             Story.LoadError
@@ -215,19 +193,16 @@ all =
                             , "google.com/Great%20Beginnings/003.png"
                             ]
                         )
-        , fuzz3
-            cheatFuzzer
-            withinThresholdFuzzer
-            withinThresholdFuzzer
+        , test
             "presents chapter after loaded and move is in range"
           <|
-            \cheat latitude longitude ->
-                present cheat
-                    [ Story.Moved latitude longitude
-                    , Story.LoadSuccess
-                    , Story.LoadSuccess
-                    , Story.LoadSuccess
-                    ]
+            \_ ->
+                Story.init config ""
+                    |= Story.update config (Story.Moved 0 0)
+                    |= Story.update config Story.LoadSuccess
+                    |= Story.update config Story.LoadSuccess
+                    |= Story.update config Story.LoadSuccess
+                    |= Story.present
                     |> Expect.equal
                         (Story.View.Chapter
                             { name = "Test Story"
@@ -245,18 +220,16 @@ all =
                                 ]
                             }
                         )
-        , fuzz2
-            (invert withinThresholdFuzzer)
-            (invert withinThresholdFuzzer)
+        , test
             "presents complex chapter after move is not in range without cheat"
           <|
-            \latitude longitude ->
-                present withoutCheat
-                    [ Story.Moved latitude longitude
-                    , Story.LoadSuccess
-                    , Story.LoadSuccess
-                    , Story.LoadSuccess
-                    ]
+            \_ ->
+                Story.init config ""
+                    |= Story.update config (Story.Moved 99 99)
+                    |= Story.update config Story.LoadSuccess
+                    |= Story.update config Story.LoadSuccess
+                    |= Story.update config Story.LoadSuccess
+                    |= Story.present
                     |> Expect.equal
                         (Story.View.Chapter
                             { name = "Test Story"
@@ -278,21 +251,22 @@ all =
             "scrolls on new chapter"
           <|
             \_ ->
-                do withoutCheat [ Story.Chosen Two ]
+                Story.init config ""
+                    |= Story.update config (Story.Chosen Two)
                     |> Tuple.second
                     |> Expect.equal scroll
         , test
             "does not send geolocation task with cheat"
           <|
             \_ ->
-                do withCheat []
+                Story.init config "#cheat"
                     |> Tuple.second
                     |> Expect.equal Cmd.none
         , test
             "does not subscribe to geolocation with cheat"
           <|
             \_ ->
-                do withCheat []
+                Story.init config "#cheat"
                     |> Tuple.first
                     |> Story.subscriptions
                     |> Expect.equal Sub.none
@@ -300,14 +274,14 @@ all =
             "sends geolocation task without cheat"
           <|
             \_ ->
-                do withoutCheat []
+                Story.init config ""
                     |> Tuple.second
                     |> Expect.notEqual Cmd.none
         , test
             "does not subscribe to geolocation when loading without cheat"
           <|
             \_ ->
-                do withoutCheat []
+                Story.init config ""
                     |> Tuple.first
                     |> Story.subscriptions
                     |> Expect.equal Sub.none
@@ -315,7 +289,8 @@ all =
             "subscribes to geolocation when loading without cheat after move"
           <|
             \_ ->
-                do withoutCheat [ (Story.Moved 1 1) ]
+                Story.init config ""
+                    |= Story.update config (Story.Moved 1 1)
                     |> Tuple.first
                     |> Story.subscriptions
                     |> Expect.notEqual Sub.none
@@ -323,7 +298,8 @@ all =
             "subscribes to geolocation when loading without cheat after error"
           <|
             \_ ->
-                do withoutCheat [ Story.LocationError ]
+                Story.init config ""
+                    |= Story.update config Story.LocationError
                     |> Tuple.first
                     |> Story.subscriptions
                     |> Expect.notEqual Sub.none
