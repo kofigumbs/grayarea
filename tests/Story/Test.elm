@@ -1,9 +1,9 @@
 module Story.Test exposing (all)
 
 import Expect
-import Test exposing (..)
 import Story
 import Story.View
+import Test exposing (..)
 
 
 type Content
@@ -82,26 +82,6 @@ all =
           <|
             \_ ->
                 Story.init config ""
-                    |= Story.present
-                    |> Expect.equal
-                        (Story.View.Loading
-                            Story.LoadError
-                            Story.LoadSuccess
-                            [ "google.com/Great%20Beginnings/001.png"
-                            , "google.com/Great%20Beginnings/002.png"
-                            , "google.com/Great%20Beginnings/003.png"
-                            ]
-                        )
-        , test
-            "presents loading until location granted without cheat"
-          <|
-            \_ ->
-                Story.init config ""
-                    |= Story.update config Story.LoadSuccess
-                    |= Story.update config Story.LoadSuccess
-                    |= Story.update config Story.LoadSuccess
-                    |= Story.update config Story.LoadSuccess
-                    |= Story.update config Story.LoadSuccess
                     |= Story.present
                     |> Expect.equal
                         (Story.View.Loading
