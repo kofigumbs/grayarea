@@ -1,23 +1,12 @@
-sudo: false
-
-language: node
-
-cache:
-  directories:
-    - sysconfcpus
-    - node_modules
-    - elm-stuff/build-artifacts
-
-install:
-  - source <(curl -sSL https://gist.githubusercontent.com/hkgumbs/a434d214628147955f73ff7a7ce4c22c/raw)
-  - npm install elm-test elm@0.18.0
-  - export PATH=$PATH:$(npm bin)
+language: elm
+elm:
+  - elm0.18.0
 
 script:
-  - elm2 test
+  - elm-test
 
 before_deploy:
-  - elm2 make --yes src/Main.elm --output assets/elm.js
+  - elm make --yes src/Main.elm --output assets/elm.js
 
 deploy:
   provider: pages
