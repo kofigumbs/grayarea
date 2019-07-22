@@ -229,7 +229,7 @@ main =
     let
         config =
             { name = "Gray Area"
-            , rootUrl = "/"
+            , rootUrl = ""
             , imageFormat = "png"
             , start = Prelude
             , table = table
